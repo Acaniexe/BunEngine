@@ -1,10 +1,9 @@
 #pragma once
 #include <Renderer/Renderer.h>
-#include <Renderer/Camera.h>
-#include "Core.h"
-#include "Window.h"
-#include "Timer.h"
-#include "Event.h"
+#include <Core/Core.h>
+#include <Core/Window.h>
+#include <Core/Timer.h>
+#include <Core/Event.h>
 
 namespace C4ndy
 {
@@ -15,18 +14,28 @@ namespace C4ndy
         virtual ~Application() = default;
 
         void Run();
-        void OnEvent(Event& e);
         void Close();
 
         static void SetExecutablePath(const char* path);
         static std::string s_ExecutablePath;
 
+    protected:
+        virtual void OnInit() {}
+        virtual void OnUpdate(f32 dt) { C4NDY_UNUSED(dt); }
+        virtual void OnRender() {}
+        virtual void OnShutdown() {}
+        virtual void OnEvent(Event& e) { C4NDY_UNUSED(e); }
+
+        Renderer::Renderer& GetRenderer() { return m_Renderer; }
+        Window& GetWindow() { return *m_Window; }
+        
     private:
+        void HandleEvent(Event& e);
         bool OnWindowClose(WindowCloseEvent& e);
+
         Scope<Window> m_Window;
         Timer m_Timer;
         bool m_Running = true;
         Renderer::Renderer m_Renderer;
-        Renderer::Camera m_Camera;
     };
 }

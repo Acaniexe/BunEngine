@@ -46,7 +46,6 @@ namespace C4ndy::RHI
     void VulkanCommandBuffer::WaitForFence()
     {
         vkWaitForFences(m_Context->GetDevice(), 1, &m_InFlightFence, VK_TRUE, UINT64_MAX);
-        vkResetFences(m_Context->GetDevice(), 1, &m_InFlightFence);
     }
 
     void VulkanCommandBuffer::Submit(u32 imageIndex)
@@ -62,6 +61,8 @@ namespace C4ndy::RHI
         submitInfo.pCommandBuffers = &m_CommandBuffer;
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = &m_RenderFinishedSemaphore[imageIndex];
+
+        vkResetFences(m_Context->GetDevice(), 1, &m_InFlightFence);
 
         if (vkQueueSubmit(m_Context->GetGraphicsQueue(), 1, &submitInfo, m_InFlightFence) != VK_SUCCESS)
             C4NDY_FATAL("Failed to submit command buffer!");

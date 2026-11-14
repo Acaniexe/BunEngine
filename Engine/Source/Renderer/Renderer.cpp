@@ -5,10 +5,10 @@
 #include <string>
 
 #if defined(_WIN32)
-    #include <windows.h>
+#include <windows.h>
 #elif defined(__linux__)
-    #include <unistd.h>
-    #include <limits.h>
+#include <unistd.h>
+#include <limits.h>
 #endif
 
 namespace C4ndy::Renderer
@@ -16,58 +16,58 @@ namespace C4ndy::Renderer
 
     Renderer::Renderer() = default;
 
-    void Renderer::Init(Window& window)
+    void Renderer::Init(Window &window)
     {
-        #if defined(C4NDY_PLATFORM_WINDOWS)
-            const char* layerOS = "Win";
-        #else
-            const char* layerOS = "Linux";
-        #endif
+        m_Window = &window;
+
+#if defined(C4NDY_PLATFORM_WINDOWS)
+        const char *layerOS = "Win";
+#else
+        const char *layerOS = "Linux";
+#endif
 
         std::filesystem::path rootPath;
-        #if defined(_WIN32)
-            char exePath[MAX_PATH];
-            GetModuleFileNameA(nullptr, exePath, MAX_PATH);
+#if defined(_WIN32)
+        char exePath[MAX_PATH];
+        GetModuleFileNameA(nullptr, exePath, MAX_PATH);
 
-            rootPath = std::filesystem::path(exePath)
-                .parent_path()
-                .parent_path()
-                .parent_path()
-                .string();
+        rootPath = std::filesystem::path(exePath)
+                       .parent_path()
+                       .parent_path()
+                       .parent_path()
+                       .string();
 
-        #elif defined(__linux__)
-            char exePath[PATH_MAX];
-            ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath) - 1);
+#elif defined(__linux__)
+        char exePath[PATH_MAX];
+        ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath) - 1);
 
-            if (pathLength == -1)
-            {
-                C4NDY_FATAL("Failed to retrieve executable path.");
-                return;
-            }
+        if (pathLength == -1)
+        {
+            C4NDY_FATAL("Failed to retrieve executable path.");
+            return;
+        }
 
-            exePath[pathLength] = '\0';
+        exePath[pathLength] = '\0';
 
-            rootPath = std::filesystem::path(exePath)
-                .parent_path()
-                .parent_path()
-                .parent_path()
-                .string();
+        rootPath = std::filesystem::path(exePath)
+                       .parent_path()
+                       .parent_path()
+                       .parent_path()
+                       .string();
 
-        #else
-            #error Unsupported platform
+#else
+#error Unsupported platform
 
-        #endif
-        
+#endif
+
         m_Context.SetLayerPath((std::filesystem::path(rootPath) / "Engine" / "ThirdParty" / "Vulkan" / "Layers" / layerOS).string());
-        m_Window = &window;
         m_Context.Init(window.GetNativeHandle());
 
         m_Swapchain.Init(m_Context, window.GetWidth(), window.GetHeight());
 
         m_DepthImage.Init(
             m_Context, window.GetWidth(), window.GetHeight(),
-            VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT
-        );
+            VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT);
 
         m_RenderPass.Init(m_Context, m_Swapchain.GetFormat(), VK_FORMAT_D32_SFLOAT);
 
@@ -106,32 +106,48 @@ namespace C4ndy::Renderer
 
         const RHI::Vertex vertices[] = {
             // +Z (front)
-            { {-0.5f,-0.5f, 0.5f}, { 0, 0, 1}, {0,0} }, { { 0.5f,-0.5f, 0.5f}, { 0, 0, 1}, {1,0} },
-            { { 0.5f, 0.5f, 0.5f}, { 0, 0, 1}, {1,1} }, { {-0.5f, 0.5f, 0.5f}, { 0, 0, 1}, {0,1} },
+            {{-0.5f, -0.5f, 0.5f}, {0, 0, 1}, {0, 0}},
+            {{0.5f, -0.5f, 0.5f}, {0, 0, 1}, {1, 0}},
+            {{0.5f, 0.5f, 0.5f}, {0, 0, 1}, {1, 1}},
+            {{-0.5f, 0.5f, 0.5f}, {0, 0, 1}, {0, 1}},
             // -Z (back)
-            { { 0.5f,-0.5f,-0.5f}, { 0, 0,-1}, {0,0} }, { {-0.5f,-0.5f,-0.5f}, { 0, 0,-1}, {1,0} },
-            { {-0.5f, 0.5f,-0.5f}, { 0, 0,-1}, {1,1} }, { { 0.5f, 0.5f,-0.5f}, { 0, 0,-1}, {0,1} },
+            {{0.5f, -0.5f, -0.5f}, {0, 0, -1}, {0, 0}},
+            {{-0.5f, -0.5f, -0.5f}, {0, 0, -1}, {1, 0}},
+            {{-0.5f, 0.5f, -0.5f}, {0, 0, -1}, {1, 1}},
+            {{0.5f, 0.5f, -0.5f}, {0, 0, -1}, {0, 1}},
             // +X (right)
-            { { 0.5f,-0.5f, 0.5f}, { 1, 0, 0}, {0,0} }, { { 0.5f,-0.5f,-0.5f}, { 1, 0, 0}, {1,0} },
-            { { 0.5f, 0.5f,-0.5f}, { 1, 0, 0}, {1,1} }, { { 0.5f, 0.5f, 0.5f}, { 1, 0, 0}, {0,1} },
+            {{0.5f, -0.5f, 0.5f}, {1, 0, 0}, {0, 0}},
+            {{0.5f, -0.5f, -0.5f}, {1, 0, 0}, {1, 0}},
+            {{0.5f, 0.5f, -0.5f}, {1, 0, 0}, {1, 1}},
+            {{0.5f, 0.5f, 0.5f}, {1, 0, 0}, {0, 1}},
             // -X (left)
-            { {-0.5f,-0.5f,-0.5f}, {-1, 0, 0}, {0,0} }, { {-0.5f,-0.5f, 0.5f}, {-1, 0, 0}, {1,0} },
-            { {-0.5f, 0.5f, 0.5f}, {-1, 0, 0}, {1,1} }, { {-0.5f, 0.5f,-0.5f}, {-1, 0, 0}, {0,1} },
+            {{-0.5f, -0.5f, -0.5f}, {-1, 0, 0}, {0, 0}},
+            {{-0.5f, -0.5f, 0.5f}, {-1, 0, 0}, {1, 0}},
+            {{-0.5f, 0.5f, 0.5f}, {-1, 0, 0}, {1, 1}},
+            {{-0.5f, 0.5f, -0.5f}, {-1, 0, 0}, {0, 1}},
             // +Y (top)
-            { {-0.5f, 0.5f, 0.5f}, { 0, 1, 0}, {0,0} }, { { 0.5f, 0.5f, 0.5f}, { 0, 1, 0}, {1,0} },
-            { { 0.5f, 0.5f,-0.5f}, { 0, 1, 0}, {1,1} }, { {-0.5f, 0.5f,-0.5f}, { 0, 1, 0}, {0,1} },
+            {{-0.5f, 0.5f, 0.5f}, {0, 1, 0}, {0, 0}},
+            {{0.5f, 0.5f, 0.5f}, {0, 1, 0}, {1, 0}},
+            {{0.5f, 0.5f, -0.5f}, {0, 1, 0}, {1, 1}},
+            {{-0.5f, 0.5f, -0.5f}, {0, 1, 0}, {0, 1}},
             // -Y (bottom)
-            { {-0.5f,-0.5f,-0.5f}, { 0,-1, 0}, {0,0} }, { { 0.5f,-0.5f,-0.5f}, { 0,-1, 0}, {1,0} },
-            { { 0.5f,-0.5f, 0.5f}, { 0,-1, 0}, {1,1} }, { {-0.5f,-0.5f, 0.5f}, { 0,-1, 0}, {0,1} },
+            {{-0.5f, -0.5f, -0.5f}, {0, -1, 0}, {0, 0}},
+            {{0.5f, -0.5f, -0.5f}, {0, -1, 0}, {1, 0}},
+            {{0.5f, -0.5f, 0.5f}, {0, -1, 0}, {1, 1}},
+            {{-0.5f, -0.5f, 0.5f}, {0, -1, 0}, {0, 1}},
         };
 
         u32 indices[36];
         for (u32 f = 0; f < 6; f++)
         {
             u32 b = f * 4;
-            u32* i = &indices[f * 6];
-            i[0] = b; i[1] = b + 1; i[2] = b + 2;
-            i[3] = b + 2; i[4] = b + 3; i[5] = b;
+            u32 *i = &indices[f * 6];
+            i[0] = b;
+            i[1] = b + 1;
+            i[2] = b + 2;
+            i[3] = b + 2;
+            i[4] = b + 3;
+            i[5] = b;
         }
 
         m_CubeVertexBuffer.InitDeviceLocal(m_Context, vertices, sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
@@ -151,7 +167,7 @@ namespace C4ndy::Renderer
 
         m_CommandBuffer.Shutdown();
         m_Pipeline.Shutdown();
-        for (auto& [name, program] : m_Shaders)
+        for (auto &[name, program] : m_Shaders)
         {
             program.vert->Shutdown();
             program.frag->Shutdown();
@@ -166,7 +182,7 @@ namespace C4ndy::Renderer
         C4NDY_INFO("Renderer shutdown.");
     }
 
-    void Renderer::LoadShaders(const std::string& shaderDir)
+    void Renderer::LoadShaders(const std::string &shaderDir)
     {
         if (!std::filesystem::exists(shaderDir))
         {
@@ -174,7 +190,7 @@ namespace C4ndy::Renderer
             return;
         }
 
-        for (const auto& entry : std::filesystem::directory_iterator(shaderDir))
+        for (const auto &entry : std::filesystem::directory_iterator(shaderDir))
         {
             std::string path = entry.path().string();
 
@@ -208,8 +224,7 @@ namespace C4ndy::Renderer
         for (u32 i = 0; i < m_Swapchain.GetImageCount(); i++)
         {
             std::array<VkImageView, 2> attachments = {
-                m_Swapchain.GetImageView(i), m_DepthImage.GetView()
-            };
+                m_Swapchain.GetImageView(i), m_DepthImage.GetView()};
 
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -238,8 +253,7 @@ namespace C4ndy::Renderer
         m_CommandBuffer.WaitForFence();
 
         m_CurrentImageIndex = m_Swapchain.AcquireNextImage(
-            m_CommandBuffer.GetImageAvailableSemaphore()
-        );
+            m_CommandBuffer.GetImageAvailableSemaphore());
 
         if (m_CurrentImageIndex == UINT32_MAX)
         {
@@ -279,7 +293,7 @@ namespace C4ndy::Renderer
         m_RenderPass.End(m_CommandBuffer.GetCommandBuffer());
         m_CommandBuffer.End();
         m_CommandBuffer.Submit(m_CurrentImageIndex);
-        
+
         if (m_Swapchain.Present(m_CommandBuffer.GetRenderFinishedSemaphore(m_CurrentImageIndex), m_CurrentImageIndex))
         {
             if (m_Window)
@@ -291,9 +305,8 @@ namespace C4ndy::Renderer
 
     void Renderer::OnResize(u32 width, u32 height)
     {
-        if (width == 0 || height == 0)
-            return;
-        
+        if (width == 0 || height == 0) return;
+
         vkDeviceWaitIdle(m_Context.GetDevice());
         DestroyFrameBuffers();
         m_Swapchain.Recreate(width, height);
@@ -323,7 +336,7 @@ namespace C4ndy::Renderer
         vkCmdDrawIndexed(cmd, 36, 1, 0, 0, 0);
     }*/
 
-    void Renderer::DrawCube(const PushData& push)
+    void Renderer::DrawCube(const PushData &push)
     {
         VkCommandBuffer cmd = m_CommandBuffer.GetCommandBuffer();
         m_MeshPipeline.Bind(cmd);
@@ -340,21 +353,21 @@ namespace C4ndy::Renderer
         vkCmdDrawIndexed(cmd, 36, 1, 0, 0, 0);
     }
 
-    void Renderer::DrawTestCube(const Math::Mat4& model)
+    void Renderer::DrawTestCube(const Math::Mat4 &model)
     {
-        DrawCube({ model, Math::Vec4(0.f) });
+        DrawCube({model, Math::Vec4(0.f)});
     }
 
     void Renderer::DrawLightMarker()
     {
         Math::Mat4 model = Math::Mat4::Translation(Math::Vec3(m_LightPos.x, m_LightPos.y, m_LightPos.z)) *
                            Math::Mat4::Scale(Math::Vec3(0.1f));
-        DrawCube({ model, Math::Vec4(1.f, 0.9f, 0.4f, 1.f) });
+        DrawCube({model, Math::Vec4(1.f, 0.9f, 0.4f, 1.f)});
     }
 
-    void Renderer::SetCamera(const Math::Mat4& view, const Math::Mat4& projection)
+    void Renderer::SetCamera(const Math::Mat4 &view, const Math::Mat4 &projection)
     {
-        CameraData data{ view, projection, m_LightPos };
+        CameraData data{view, projection, m_LightPos};
         m_CameraBuffer.WriteData(&data, sizeof(data));
     }
 }
