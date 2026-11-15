@@ -1,12 +1,12 @@
-# C4ndy Engine
+# Bun Engine
 
-C4ndy Engine is an experimental cross-platform game engine and editor written in C++ with a custom build system written in C#.
+Bun Engine is an experimental cross-platform game engine and editor written in C++ with a custom build system written in C#.
 
 The project is heavily inspired by Unreal Engine's architecture and development workflow while remaining an independent implementation.
 
 > **Project Status**
 >
-> C4ndy Engine is currently in early development.
+> Bun Engine is currently in early development.
 >
 > The custom build system is functional and supports Windows, Linux, and macOS. Most engine and editor systems are still under active development.
 
@@ -77,7 +77,7 @@ This will build all available targets using the default `Debug` configuration.
 ## Project Structure
 
 ```text
-C4ndy/
+Bun/
 ├── Build/                  # Custom build system
 ├── Engine/
 │   ├── Source/
@@ -96,7 +96,7 @@ C4ndy/
 │   └── Source/
 ├── Sandbox/
 │   └── Source/
-├── c4ndy.build.json
+├── bun.build.json
 ├── build.bat
 ├── build.sh
 └── BUILDING.md

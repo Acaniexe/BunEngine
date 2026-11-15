@@ -2,7 +2,7 @@
 #include "Core.h"
 #include <fstream>
 
-namespace C4ndy
+namespace Bun
 {
     enum class LogLevel
     {
@@ -25,7 +25,7 @@ namespace C4ndy
 
     private:
         Logger() = default;
-        C4NDY_NON_COPYABLE_MOVEABLE(Logger)
+        BUN_NON_COPYABLE_MOVEABLE(Logger)
 
         std::string _logFilePath;
         std::ofstream _logFile;
@@ -33,7 +33,7 @@ namespace C4ndy
     };
 }
 
-#define C4NDY_INFO(...)  ::C4ndy::Logger::Get().Info (__VA_ARGS__)
-#define C4NDY_WARN(...)  ::C4ndy::Logger::Get().Warn (__VA_ARGS__)
-#define C4NDY_ERROR(...) ::C4ndy::Logger::Get().Error(__VA_ARGS__)
-#define C4NDY_FATAL(...) ::C4ndy::Logger::Get().Fatal(__VA_ARGS__)
+#define BUN_INFO(...)  ::Bun::Logger::Get().Info (__VA_ARGS__)
+#define BUN_WARN(...)  ::Bun::Logger::Get().Warn (__VA_ARGS__)
+#define BUN_ERROR(...) ::Bun::Logger::Get().Error(__VA_ARGS__)
+#define BUN_FATAL(...) ::Bun::Logger::Get().Fatal(__VA_ARGS__)

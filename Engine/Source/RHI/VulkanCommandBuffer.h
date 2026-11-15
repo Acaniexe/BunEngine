@@ -2,13 +2,13 @@
 #include <Core/Core.h>
 #include "VulkanContext.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanCommandBuffer
     {
     public:
         VulkanCommandBuffer();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanCommandBuffer);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanCommandBuffer);
 
         void Init(VulkanContext& context, u32 imageCount);
         void Shutdown();

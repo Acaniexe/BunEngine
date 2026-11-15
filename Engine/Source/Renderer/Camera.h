@@ -1,7 +1,7 @@
 #pragma once
 #include <Math/Math.h>
 
-namespace C4ndy::Renderer
+namespace Bun::Renderer
 {
     class Camera
     {

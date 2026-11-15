@@ -2,13 +2,13 @@
 #include <Core/Core.h>
 #include <vulkan/vulkan.h>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanContext
     {
     public:
         VulkanContext();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanContext);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanContext);
 
         void Init(void* windowHandle);
         void Shutdown();

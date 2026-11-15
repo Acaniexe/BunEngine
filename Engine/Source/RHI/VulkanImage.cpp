@@ -1,7 +1,7 @@
 #include "VulkanImage.h"
 #include <Core/Logger.h>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     VulkanImage::VulkanImage() = default;
     
@@ -15,7 +15,7 @@ namespace C4ndy::RHI
         AllocateMemory();
         CreateImageView(aspectFlags);
 
-        C4NDY_INFO("Vulkan image created.");
+        BUN_INFO("Vulkan image created.");
     }
 
     void VulkanImage::Shutdown()
@@ -24,7 +24,7 @@ namespace C4ndy::RHI
         vkDestroyImage(m_Context->GetDevice(), m_Image, nullptr);
         vkFreeMemory(m_Context->GetDevice(), m_Memory, nullptr);
 
-        C4NDY_INFO("Vulkan image destroyed.");
+        BUN_INFO("Vulkan image destroyed.");
     }
 
     void VulkanImage::CreateImage(VkImageUsageFlags usage)
@@ -45,7 +45,7 @@ namespace C4ndy::RHI
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
         if (vkCreateImage(m_Context->GetDevice(), &imageInfo, nullptr, &m_Image) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create vulkan image.");
+            BUN_FATAL("Failed to create vulkan image.");
     }
 
     void VulkanImage::AllocateMemory()
@@ -67,7 +67,7 @@ namespace C4ndy::RHI
         }
 
         if (memTypeIndex == UINT32_MAX)
-            C4NDY_FATAL("Failed to find suitable GPU memory type for image!");
+            BUN_FATAL("Failed to find suitable GPU memory type for image!");
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -75,7 +75,7 @@ namespace C4ndy::RHI
         allocInfo.memoryTypeIndex = memTypeIndex;
 
         if (vkAllocateMemory(m_Context->GetDevice(), &allocInfo, nullptr, &m_Memory) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to allocate Vulkan image memory!");
+            BUN_FATAL("Failed to allocate Vulkan image memory!");
         
         vkBindImageMemory(m_Context->GetDevice(), m_Image, m_Memory, 0);
     }
@@ -94,7 +94,7 @@ namespace C4ndy::RHI
         viewInfo.subresourceRange.layerCount = 1;
 
         if (vkCreateImageView(m_Context->GetDevice(), &viewInfo, nullptr, &m_View) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create vulkan image view!");
+            BUN_FATAL("Failed to create vulkan image view!");
     }
 
     void VulkanImage::TransitionLayout(VkCommandBuffer cmd, VkImageLayout newLayout)

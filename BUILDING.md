@@ -1,4 +1,4 @@
-# C4ndy Build Guide
+# Bun Build Guide
 
 This repository uses a custom build tool located in `Build/` and a Windows wrapper script at `build.bat`.
 
@@ -14,7 +14,7 @@ Before building, ensure the following are installed:
   * Linux: `g++`
   * macOS: `clang++`
 
-Run all build commands from the repository root (the directory containing `c4ndy.build.json`).
+Run all build commands from the repository root (the directory containing `bun.build.json`).
 
 ---
 
@@ -130,29 +130,29 @@ If the build tool has not yet been published for your platform:
 ### Linux x64
 
 ```bash
-dotnet publish ./Build/C4ndyBuildTool.csproj -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/linux-x64
-chmod +x ./Build/bin/linux-x64/C4ndyBuildTool
+dotnet publish ./Build/BunBuildTool.csproj -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/linux-x64
+chmod +x ./Build/bin/linux-x64/BunBuildTool
 ```
 
 ### Linux ARM64
 
 ```bash
-dotnet publish ./Build/C4ndyBuildTool.csproj -c Release -r linux-arm64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/linux-arm64
-chmod +x ./Build/bin/linux-arm64/C4ndyBuildTool
+dotnet publish ./Build/BunBuildTool.csproj -c Release -r linux-arm64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/linux-arm64
+chmod +x ./Build/bin/linux-arm64/BunBuildTool
 ```
 
 ### macOS x64
 
 ```bash
-dotnet publish ./Build/C4ndyBuildTool.csproj -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/osx-x64
-chmod +x ./Build/bin/osx-x64/C4ndyBuildTool
+dotnet publish ./Build/BunBuildTool.csproj -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/osx-x64
+chmod +x ./Build/bin/osx-x64/BunBuildTool
 ```
 
 ### macOS ARM64
 
 ```bash
-dotnet publish ./Build/C4ndyBuildTool.csproj -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/osx-arm64
-chmod +x ./Build/bin/osx-arm64/C4ndyBuildTool
+dotnet publish ./Build/BunBuildTool.csproj -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true -o ./Build/bin/osx-arm64
+chmod +x ./Build/bin/osx-arm64/BunBuildTool
 ```
 
 ---
@@ -183,12 +183,12 @@ If build outputs appear in the repository root, the build tool may be misconfigu
 
 * Default the target to `All`
 * Default the configuration to `Debug`
-* Automatically build `C4ndyBuildTool.exe` if it is missing
+* Automatically build `BunBuildTool.exe` if it is missing
 
 The build graph, module definitions, and dependency information are defined in:
 
 ```text
-c4ndy.build.json
+bun.build.json
 ```
 
 ---
@@ -196,7 +196,7 @@ c4ndy.build.json
 ## Notes
 
 * Build commands should always be executed from the repository root.
-* `c4ndy.build.json` defines module targets and dependencies.
+* `bun.build.json` defines module targets and dependencies.
 * Linux builds require `g++` to be available on `PATH`.
 * macOS builds require `clang++` to be available on `PATH`.
 * A `build.sh` wrapper script has not yet been implemented.

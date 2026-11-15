@@ -3,7 +3,7 @@
 #include "Vec3.h"
 #include "Mat4.h"
 
-namespace C4ndy::Math
+namespace Bun::Math
 {
     struct Quaternion
     {

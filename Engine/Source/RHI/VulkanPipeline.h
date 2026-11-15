@@ -4,13 +4,13 @@
 #include "VulkanShader.h"
 #include "VulkanRenderPass.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanPipeline
     {
     public:
         VulkanPipeline();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanPipeline);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanPipeline);
 
         void Init(VulkanContext& context);
         void Shutdown();

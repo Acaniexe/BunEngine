@@ -2,7 +2,7 @@
 #include <Core/Input.h>
 #include <Renderer/Camera.h>
 
-using namespace C4ndy;
+using namespace Bun;
 
 class SandboxApp : public Application
 {

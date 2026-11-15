@@ -1,4 +1,4 @@
-namespace C4ndy.Build;
+namespace Bun.Build;
 
 public static class BuildUtils
 {
@@ -7,7 +7,7 @@ public static class BuildUtils
         string? dir = Directory.GetCurrentDirectory();
         while (dir is not null)
         {
-            if (File.Exists(Path.Combine(dir, "c4ndy.build.json")))
+            if (File.Exists(Path.Combine(dir, "bun.build.json")))
                 return dir;
             dir = Directory.GetParent(dir)?.FullName;
         }

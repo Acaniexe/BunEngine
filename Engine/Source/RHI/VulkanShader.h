@@ -2,13 +2,13 @@
 #include <Core/Core.h>
 #include "VulkanContext.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanShader
     {
     public:
         VulkanShader();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanShader);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanShader);
 
         void Init(VulkanContext&, const std::string& path, VkShaderStageFlagBits stage);
         void Shutdown();

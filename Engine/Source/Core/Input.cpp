@@ -1,7 +1,7 @@
 #include "Input.h"
 #include <cstring>
 
-namespace C4ndy
+namespace Bun
 {
     bool Input::s_Keys[k_MaxKeys] = {};
     bool Input::s_KeysPrev[k_MaxKeys] = {};

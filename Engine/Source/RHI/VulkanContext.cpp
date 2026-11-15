@@ -5,15 +5,15 @@
 #include <set>
 #include <cstdlib>
 #include <cstring>
-#if defined(C4NDY_PLATFORM_WINDOWS)
+#if defined(BUN_PLATFORM_WINDOWS)
     #include <Windows.h>
     #include <vulkan/vulkan_win32.h>
-#elif defined(C4NDY_PLATFORM_LINUX)
+#elif defined(BUN_PLATFORM_LINUX)
     #include <X11/Xlib.h>
     #include <vulkan/vulkan_xlib.h>
 #endif
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
 
     VulkanContext::VulkanContext() = default;
@@ -26,7 +26,7 @@ namespace C4ndy::RHI
         PickPhysicalDevice();
         CreateLogicalDevice();
 
-        C4NDY_INFO("Vulkan context initialized.");
+        BUN_INFO("Vulkan context initialized.");
     }
 
     void VulkanContext::Shutdown()
@@ -39,7 +39,7 @@ namespace C4ndy::RHI
         vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
         vkDestroyInstance(m_Instance, nullptr);
 
-        C4NDY_INFO("Vulkan context destroyed.");
+        BUN_INFO("Vulkan context destroyed.");
     }
 
     void VulkanContext::CreateInstance()
@@ -49,7 +49,7 @@ namespace C4ndy::RHI
         {
             if (!m_LayerPath.empty())
             {
-        #if defined(C4NDY_PLATFORM_WINDOWS)
+        #if defined(BUN_PLATFORM_WINDOWS)
                 SetEnvironmentVariableA("VK_LAYER_PATH", m_LayerPath.c_str());
         #else
                 setenv("VK_LAYER_PATH", m_LayerPath.c_str(), 1);
@@ -65,24 +65,24 @@ namespace C4ndy::RHI
                 if (strcmp(layer.layerName, k_ValidationLayer) == 0) { m_ValidationActive = true; break; }
 
             if (!m_ValidationActive)
-                C4NDY_WARN("Validation layer not found - running without it. Run Setup to install it.");
+                BUN_WARN("Validation layer not found - running without it. Run Setup to install it.");
         }
 
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.pApplicationName = "C4ndy Engine";
+        appInfo.pApplicationName = "Bun Engine";
         appInfo.applicationVersion = VK_MAKE_VERSION(0, 1, 0);
-        appInfo.pEngineName = "C4ndy";
+        appInfo.pEngineName = "Bun";
         appInfo.engineVersion = VK_MAKE_VERSION(0, 1, 0);
         appInfo.apiVersion = VK_API_VERSION_1_3;
 
         std::vector<const char*> extensions = {
             VK_KHR_SURFACE_EXTENSION_NAME,
-    #if defined(C4NDY_PLATFORM_WINDOWS)
+    #if defined(BUN_PLATFORM_WINDOWS)
             "VK_KHR_win32_surface",
-    #elif defined(C4NDY_PLATFORM_LINUX)
+    #elif defined(BUN_PLATFORM_LINUX)
             "VK_KHR_xlib_surface",
-    #elif defined(C4NDY_PLATFORM_MACOS)
+    #elif defined(BUN_PLATFORM_MACOS)
             "VK_MVK_macos_surface",
     #endif
         };
@@ -97,9 +97,9 @@ namespace C4ndy::RHI
         createInfo.ppEnabledExtensionNames = extensions.data();
 
         if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create Vulkan instance.");
+            BUN_FATAL("Failed to create Vulkan instance.");
         else
-            C4NDY_INFO("Vulkan instance created successfully.");
+            BUN_INFO("Vulkan instance created successfully.");
     }
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -108,15 +108,15 @@ namespace C4ndy::RHI
         const VkDebugUtilsMessengerCallbackDataEXT* data,
         void* userData)
     {
-        C4NDY_UNUSED(type);
-        C4NDY_UNUSED(userData);
+        BUN_UNUSED(type);
+        BUN_UNUSED(userData);
 
         if (severity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-            C4NDY_ERROR(std::string("[VULKAN] ") + data->pMessage);
+            BUN_ERROR(std::string("[VULKAN] ") + data->pMessage);
         else if (severity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-            C4NDY_WARN(std::string("[VULKAN] ") + data->pMessage);
+            BUN_WARN(std::string("[VULKAN] ") + data->pMessage);
         else
-            C4NDY_INFO(std::string("[VULKAN] ") + data->pMessage);
+            BUN_INFO(std::string("[VULKAN] ") + data->pMessage);
 
         return VK_FALSE;
     }
@@ -140,9 +140,9 @@ namespace C4ndy::RHI
                 vkGetInstanceProcAddr (m_Instance, "vkCreateDebugUtilsMessengerEXT");
 
             if (func && func(m_Instance, &createInfo, nullptr, &m_DebugMessenger) == VK_SUCCESS)
-                C4NDY_INFO("Vulkan validation layers enabled.");
+                BUN_INFO("Vulkan validation layers enabled.");
             else
-                C4NDY_WARN("Failed to setup Vulkan debug messenger.");
+                BUN_WARN("Failed to setup Vulkan debug messenger.");
     }     
     
     void VulkanContext::DestroyDebugMessenger()
@@ -155,15 +155,15 @@ namespace C4ndy::RHI
 
     void VulkanContext::CreateSurface(void* windowHandle)
     {
-    #if defined(C4NDY_PLATFORM_WINDOWS)
+    #if defined(BUN_PLATFORM_WINDOWS)
         VkWin32SurfaceCreateInfoKHR createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
         createInfo.hwnd = (HWND)windowHandle;
         createInfo.hinstance = GetModuleHandle(nullptr);
 
         if (vkCreateWin32SurfaceKHR(m_Instance, &createInfo, nullptr, &m_Surface) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create Win32 Vulkan surface!");
-    #elif defined(C4NDY_PLATFORM_LINUX)
+            BUN_FATAL("Failed to create Win32 Vulkan surface!");
+    #elif defined(BUN_PLATFORM_LINUX)
         struct LinuxWindowHandle { void* display; unsigned long window; };
         auto* handle = (LinuxWindowHandle*)windowHandle;
 
@@ -173,10 +173,10 @@ namespace C4ndy::RHI
         createInfo.window = handle->window;
 
         if (vkCreateXlibSurfaceKHR(m_Instance, &createInfo, nullptr, &m_Surface) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create linux Vulkan Surface!");
+            BUN_FATAL("Failed to create linux Vulkan Surface!");
     #endif
 
-        C4NDY_INFO("Vulkan surface created.");
+        BUN_INFO("Vulkan surface created.");
     }
 
     void VulkanContext::PickPhysicalDevice()
@@ -185,7 +185,7 @@ namespace C4ndy::RHI
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
 
         if (deviceCount == 0)
-            C4NDY_FATAL("No Vulkan-capable GPU found!");
+            BUN_FATAL("No Vulkan-capable GPU found!");
 
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
@@ -223,12 +223,12 @@ namespace C4ndy::RHI
 
                 VkPhysicalDeviceProperties props;
                 vkGetPhysicalDeviceProperties(device, &props);
-                C4NDY_INFO(std::string("GPU selected: ") + props.deviceName);
+                BUN_INFO(std::string("GPU selected: ") + props.deviceName);
                 return;
             }
         }
 
-        C4NDY_FATAL("No suitable GPU found!");
+        BUN_FATAL("No suitable GPU found!");
     }
 
     void VulkanContext::CreateLogicalDevice()
@@ -261,11 +261,11 @@ namespace C4ndy::RHI
         createInfo.ppEnabledExtensionNames = k_DeviceExtensions;
 
         if (vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_Device) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create Vulkan logical device!");
+            BUN_FATAL("Failed to create Vulkan logical device!");
 
         vkGetDeviceQueue(m_Device, m_GraphicsQueueFamily, 0, &m_GraphicsQueue);
         vkGetDeviceQueue(m_Device, m_PresentQueueFamily, 0, &m_PresentQueue);
 
-        C4NDY_INFO("Vulkan logical device created.");
+        BUN_INFO("Vulkan logical device created.");
     }
 }

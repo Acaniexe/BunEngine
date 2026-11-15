@@ -3,7 +3,7 @@
 #include <cmath>
 #include <limits>
 
-namespace C4ndy::Math
+namespace Bun::Math
 {
     inline constexpr f64 PI = 3.14159265358979323846;
     inline constexpr f64 TWO_PI = PI * 2.0;

@@ -1,13 +1,13 @@
 #include "Core.h"
 
-#if defined(C4NDY_PLATFORM_WINDOWS)
+#if defined(BUN_PLATFORM_WINDOWS)
 
 #include "Window.h"
 #include "Input.h"
 #include "Logger.h"
 #include <Windows.h>
 
-namespace C4ndy
+namespace Bun
 {
     class WindowsWindow : public Window
     {
@@ -19,7 +19,7 @@ namespace C4ndy
             wc.cbSize = sizeof(WNDCLASSEX);
             wc.lpfnWndProc = WindowsWindow::WndProcStatic;
             wc.hInstance = GetModuleHandle(nullptr);
-            wc.lpszClassName = L"C4ndyWindowClass";
+            wc.lpszClassName = L"BunWindowClass";
             wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
 
             std::wstring title(desc.Title.begin(), desc.Title.end());
@@ -29,7 +29,7 @@ namespace C4ndy
                 Logger::Get().Error("RegisterClass failed: " + std::to_string(GetLastError()));
 
             m_Hwnd = CreateWindowEx(
-                0, L"C4ndyWindowClass", title.c_str(),
+                0, L"BunWindowClass", title.c_str(),
                 WS_OVERLAPPEDWINDOW,
                 CW_USEDEFAULT, CW_USEDEFAULT,
                 (int)desc.Width, (int)desc.Height,

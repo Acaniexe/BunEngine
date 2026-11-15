@@ -1,11 +1,11 @@
 #include "Core.h"
 
-#if defined(C4NDY_PLATFORM_MACOS)
+#if defined(BUN_PLATFORM_MACOS)
 
 #include "Window.h"
 #include "Logger.h"
 
-namespace C4ndy
+namespace Bun
 {
     //TODO: Implement using Cocoa
 

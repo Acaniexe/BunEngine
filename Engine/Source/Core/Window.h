@@ -2,11 +2,11 @@
 #include "Core.h"
 #include "Event.h"
 
-namespace C4ndy
+namespace Bun
 {
     struct WindowDesc
     {
-        std::string Title = "C4ndy Engine";
+        std::string Title = "Bun Engine";
         u32 Width = 1280;
         u32 Height = 720;
         bool VSync = true;

@@ -2,13 +2,13 @@
 #include <Core/Core.h>
 #include "VulkanContext.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanRenderPass
     {
     public:    
         VulkanRenderPass();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanRenderPass);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanRenderPass);
 
         void Init(VulkanContext&, VkFormat colorFormat, VkFormat depthFormat);
         void Shutdown();

@@ -5,7 +5,7 @@ export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 MODE=${1:-setup}
 
 if ! command -v dotnet >/dev/null 2>&1; then
-    echo "[C4ndy] .NET 8 SDK not found."
+    echo "[Bun] .NET 8 SDK not found."
     echo "        Install it from https://dotnet.microsoft.com/download/dotnet/8.0"
     exit 1
 fi
@@ -15,7 +15,7 @@ missing=()
 command -v g++ >/dev/null 2>&1 || missing+=(g++)
 [ -f /usr/include/X11/Xlib.h ] || missing+=(libx11-dev)
 if [ ${#missing[@]} -gt 0 ]; then
-    echo "[C4ndy] Missing packages: ${missing[*]}"
+    echo "[Bun] Missing packages: ${missing[*]}"
     echo "        sudo apt install ${missing[*]}"
     exit 1
 fi
@@ -27,10 +27,10 @@ if [ "$OS" = "Darwin" ]; then
 else
     RID=$( [ "$ARCH" = "aarch64" ] && echo "linux-arm64" || echo "linux-x64" )
 fi
-TOOL="./Build/bin/${RID}/C4ndyBuildTool"
+TOOL="./Build/bin/${RID}/BunBuildTool"
 
-echo "[C4ndy] Building build tool..."
-dotnet publish ./Build/C4ndyBuildTool.csproj -c Release -r "$RID" --self-contained \
+echo "[Bun] Building build tool..."
+dotnet publish ./Build/BunBuildTool.csproj -c Release -r "$RID" --self-contained \
     -p:PublishSingleFile=true -p:InvariantGlobalization=true -v q --nologo \
     -o "./Build/bin/${RID}"
 chmod +x "$TOOL"

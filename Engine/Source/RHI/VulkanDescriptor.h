@@ -2,13 +2,13 @@
 #include <Core/Core.h>
 #include "VulkanContext.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanDescriptor
     {
     public: 
         VulkanDescriptor();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanDescriptor);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanDescriptor);
 
         void Init(VulkanContext& context);
         void Shutdown();

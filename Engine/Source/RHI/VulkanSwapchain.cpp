@@ -2,7 +2,7 @@
 #include <Core/Logger.h>
 #include <algorithm>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
 
     VulkanSwapchain::VulkanSwapchain() = default;
@@ -12,7 +12,7 @@ namespace C4ndy::RHI
         m_Context = &context;
         CreateSwapchain(width, height);
         CreateImageViews();
-        C4NDY_INFO("Vulkan Swapchain created.");
+        BUN_INFO("Vulkan Swapchain created.");
     }
 
     void VulkanSwapchain::Shutdown()
@@ -22,7 +22,7 @@ namespace C4ndy::RHI
         m_ImageViews.clear();
 
         vkDestroySwapchainKHR(m_Context->GetDevice(), m_Swapchain, nullptr);
-        C4NDY_INFO("Vulkan swapchain destroyed");
+        BUN_INFO("Vulkan swapchain destroyed");
     }
 
     void VulkanSwapchain::Recreate(u32 width, u32 height)
@@ -31,7 +31,7 @@ namespace C4ndy::RHI
         Shutdown();
         CreateSwapchain(width, height);
         CreateImageViews();
-        C4NDY_INFO("Vulkan swapchain recreated.");
+        BUN_INFO("Vulkan swapchain recreated.");
     }
 
     VkSurfaceFormatKHR VulkanSwapchain::ChooseSurfaceFormat()
@@ -132,7 +132,7 @@ namespace C4ndy::RHI
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
         if (vkCreateSwapchainKHR(m_Context->GetDevice(), &createInfo, nullptr, &m_Swapchain) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create vulkan swapchain!");
+            BUN_FATAL("Failed to create vulkan swapchain!");
 
         vkGetSwapchainImagesKHR(m_Context->GetDevice(), m_Swapchain, &imageCount, nullptr);
         m_Images.resize(imageCount);
@@ -164,7 +164,7 @@ namespace C4ndy::RHI
             createInfo.subresourceRange.layerCount = 1;
 
             if (vkCreateImageView(m_Context->GetDevice(), &createInfo, nullptr, &m_ImageViews[i]) != VK_SUCCESS)
-                C4NDY_FATAL("Failed to create swapchain image view!");
+                BUN_FATAL("Failed to create swapchain image view!");
         }
     }
 
@@ -175,12 +175,12 @@ namespace C4ndy::RHI
 
         if (result == VK_ERROR_OUT_OF_DATE_KHR)
         {
-            C4NDY_WARN("Swapchain out of date during acquire!");
+            BUN_WARN("Swapchain out of date during acquire!");
             return UINT32_MAX;
         }
         else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
         {
-            C4NDY_FATAL("Failed to acquire swapchain image!");
+            BUN_FATAL("Failed to acquire swapchain image!");
         }
 
         return imageIndex;
@@ -200,11 +200,11 @@ namespace C4ndy::RHI
 
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
         {
-            C4NDY_WARN("Swapchain out of date or suboptimal; recreating.");
+            BUN_WARN("Swapchain out of date or suboptimal; recreating.");
             return true;
         }
         else if (result != VK_SUCCESS)
-            C4NDY_FATAL("Failed to present swapchain image!");
+            BUN_FATAL("Failed to present swapchain image!");
         return false;
     }
 }

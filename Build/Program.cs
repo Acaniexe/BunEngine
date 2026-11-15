@@ -1,11 +1,11 @@
-using C4ndy.Build;
+using Bun.Build;
 
 class Program
 {
     static int Main(string[] args)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("=== C4ndy Build Tool ===");
+        Console.WriteLine("=== Bun Build Tool ===");
         Console.ResetColor();
 
         string target = "All";
@@ -27,7 +27,7 @@ class Program
         string? root = BuildUtils.FindRoot();
         if (root is null)
         {
-            BuildUtils.Error("Could not find c4ndy.build.json. Run from inside the C4ndyEngine directory.");
+            BuildUtils.Error("Could not find bun.build.json. Run from inside the BunEngine directory.");
             return 1;
         }
 
@@ -38,10 +38,10 @@ class Program
         if (args.Length > 0 && (args[0] == "setup" || args[0] == "verify"))
             return DependencySetup.Run(root, verifyOnly: args[0] == "verify") ? 0 : 1;
 
-        BuildDescriptor? descriptor = BuildDescriptor.Load(Path.Combine(root, "c4ndy.build.json"));
+        BuildDescriptor? descriptor = BuildDescriptor.Load(Path.Combine(root, "bun.build.json"));
         if (descriptor is null)
         {
-            BuildUtils.Error("Failed to parse c4ndy.build.json.");
+            BuildUtils.Error("Failed to parse bun.build.json.");
             return 1;
         }
 

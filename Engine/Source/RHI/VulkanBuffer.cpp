@@ -2,7 +2,7 @@
 #include <Core/Logger.h>
 #include <cstring>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
 
     VulkanBuffer::VulkanBuffer() = default;
@@ -19,7 +19,7 @@ namespace C4ndy::RHI
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         if (vkCreateBuffer(m_Context->GetDevice(), &bufferInfo, nullptr, &m_Buffer) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create Vulkan buffer.");
+            BUN_FATAL("Failed to create Vulkan buffer.");
 
         AllocateMemory(memProps);
     }
@@ -29,7 +29,7 @@ namespace C4ndy::RHI
         if (m_MappedData) Unmap();
         vkDestroyBuffer(m_Context->GetDevice(), m_Buffer, nullptr);
         vkFreeMemory(m_Context->GetDevice(), m_Memory, nullptr);
-        C4NDY_INFO("Vulkan buffer destroyed.");
+        BUN_INFO("Vulkan buffer destroyed.");
     }
 
     void VulkanBuffer::AllocateMemory(VkMemoryPropertyFlags properties)
@@ -51,7 +51,7 @@ namespace C4ndy::RHI
         }
 
         if (memTypeIndex == UINT32_MAX)
-            C4NDY_FATAL("Failed to find suitable memory type for buffer.");
+            BUN_FATAL("Failed to find suitable memory type for buffer.");
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -59,7 +59,7 @@ namespace C4ndy::RHI
         allocInfo.memoryTypeIndex = memTypeIndex;
 
         if (vkAllocateMemory(m_Context->GetDevice(), &allocInfo, nullptr, &m_Memory) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to allocate Vulkan buffer memory.");
+            BUN_FATAL("Failed to allocate Vulkan buffer memory.");
 
         vkBindBufferMemory(m_Context->GetDevice(), m_Buffer, m_Memory, 0);
     }
@@ -79,7 +79,7 @@ namespace C4ndy::RHI
     {
         if (!m_MappedData)
         {
-            C4NDY_WARN("Attempted to write to unmapped buffer!");
+            BUN_WARN("Attempted to write to unmapped buffer!");
             return;
         }
         memcpy(m_MappedData, data, (size_t)size);

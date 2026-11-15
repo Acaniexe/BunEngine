@@ -2,7 +2,7 @@
 #include <Core/Logger.h>
 #include <array>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
 
     VulkanRenderPass::VulkanRenderPass() = default;
@@ -14,13 +14,13 @@ namespace C4ndy::RHI
         m_DepthFormat = depthFormat == VK_FORMAT_UNDEFINED ? FindDepthFormat() : depthFormat;
 
         CreateRenderPass();
-        C4NDY_INFO("Vulkan render pass created.");
+        BUN_INFO("Vulkan render pass created.");
     }
 
     void VulkanRenderPass::Shutdown()
     {
         vkDestroyRenderPass(m_Context->GetDevice(), m_RenderPass, nullptr);
-        C4NDY_INFO("Vulkan render pass destroyed.");
+        BUN_INFO("Vulkan render pass destroyed.");
     }
 
     void VulkanRenderPass::End(VkCommandBuffer cmd)
@@ -45,7 +45,7 @@ namespace C4ndy::RHI
                 return format;
         }
 
-        C4NDY_FATAL("Failed to find supported depth format!");
+        BUN_FATAL("Failed to find supported depth format!");
         return VK_FORMAT_UNDEFINED;
     }
 
@@ -123,6 +123,6 @@ namespace C4ndy::RHI
         renderPassInfo.pDependencies   = &dependency;
 
         if (vkCreateRenderPass(m_Context->GetDevice(), &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create Vulkan render pass!");
+            BUN_FATAL("Failed to create Vulkan render pass!");
     }
 }

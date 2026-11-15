@@ -1,5 +1,5 @@
 {
-  "engine_name": "C4ndyEngine",
+  "engine_name": "BunEngine",
   "version": "0.1.0",
   "modules": [
     {
@@ -9,7 +9,7 @@
       "source_dirs": ["Engine/Source/Core"],
       "include_dirs": ["Engine/Source"],
       "dependencies": [],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "Math",
@@ -18,7 +18,7 @@
       "source_dirs": ["Engine/Source/Math"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
       "dependencies": [],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "Runtime",
@@ -27,7 +27,7 @@
       "source_dirs": ["Engine/Source/Runtime"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
       "dependencies": ["Core", "Math", "RHI", "Renderer"],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "RHI",
@@ -36,7 +36,7 @@
       "source_dirs": ["Engine/Source/RHI"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
       "dependencies": ["Core", "Math"],
-      "defines": ["C4NDY_ENGINE", "C4NDY_VULKAN"]
+      "defines": ["BUN_ENGINE", "BUN_VULKAN"]
     },
     {
       "name": "Renderer",
@@ -45,7 +45,7 @@
       "source_dirs": ["Engine/Source/Renderer"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
       "dependencies": ["Core", "Math", "RHI"],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "Physics",
@@ -54,7 +54,7 @@
       "source_dirs": ["Engine/Source/Physics"],
       "include_dirs": ["Engine/Source"],
       "dependencies": ["Core", "Math"],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "Audio",
@@ -63,7 +63,7 @@
       "source_dirs": ["Engine/Source/Audio"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
       "dependencies": ["Core"],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "Assets",
@@ -72,7 +72,7 @@
       "source_dirs": ["Engine/Source/Assets"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
       "dependencies": ["Core", "RHI"],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "ECS",
@@ -81,7 +81,7 @@
       "source_dirs": ["Engine/Source/ECS"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
       "dependencies": ["Core", "Math"],
-      "defines": ["C4NDY_ENGINE"]
+      "defines": ["BUN_ENGINE"]
     },
     {
       "name": "Editor",
@@ -94,7 +94,7 @@
       "lib_dirs_linux": ["Engine/ThirdParty/Vulkan/Lib/Linux/VulkanLoader/lib"],
       "libs_linux": ["vulkan"],
       "dependencies": ["Core", "Math", "RHI", "Renderer", "Physics", "Audio", "Assets", "ECS", "Runtime"],
-      "defines": ["C4NDY_EDITOR"]
+      "defines": ["BUN_EDITOR"]
     },
     {
       "name": "Sandbox",
@@ -107,7 +107,7 @@
       "lib_dirs_linux": ["Engine/ThirdParty/Vulkan/Lib/Linux/VulkanLoader/lib"],
       "libs_linux": ["vulkan"],
       "dependencies": ["Core", "Math", "RHI", "Renderer", "Physics", "Audio", "Assets", "ECS", "Runtime"],
-      "defines": ["C4NDY_SANDBOX"]
+      "defines": ["BUN_SANDBOX"]
     }
   ]
 }

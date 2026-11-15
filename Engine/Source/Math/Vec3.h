@@ -1,7 +1,7 @@
 #pragma once
 #include "MathUtils.h"
 
-namespace C4ndy::Math 
+namespace Bun::Math 
 {
     struct Vec3
     {

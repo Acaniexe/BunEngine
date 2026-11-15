@@ -1,4 +1,4 @@
-namespace C4ndy.Build;
+namespace Bun.Build;
 
 public class ResolvedModule
 {

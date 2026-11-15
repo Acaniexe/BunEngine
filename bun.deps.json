@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "release_base": "https://github.com/Acaniexe/C4ndyEngine/releases/download/deps-vulkan-1.4.363.0/",
+  "release_base": "https://github.com/Acaniexe/BunEngine/releases/download/deps-vulkan-1.4.363.0/",
   "dependencies": [
     { "name": "vulkan-headers", "platform": "all", "file": "vulkan-headers.zip",
       "sha256": "C0DBCE52B92995DC7B3A679AE0EAFAD76DAB006699134E5805EB2DF8F92EDDC8",

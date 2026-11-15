@@ -4,13 +4,13 @@
 #include <RHI/RHI.h>
 #include <Math/Math.h>
 
-namespace C4ndy::Renderer
+namespace Bun::Renderer
 {
     class Renderer
     {
     public:
         Renderer();
-        C4NDY_NON_COPYABLE_MOVEABLE(Renderer);
+        BUN_NON_COPYABLE_MOVEABLE(Renderer);
 
         void Init(Window& window);
         void Shutdown();

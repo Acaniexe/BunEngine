@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace C4ndy.Build;
+namespace Bun.Build;
 
 public class DepsManifest
 {
@@ -28,7 +28,7 @@ public static class DependencySetup
 {
     public static bool Run(string root, bool verifyOnly)
     {
-        string manifestPath = Path.Combine(root, "c4ndy.deps.json");
+        string manifestPath = Path.Combine(root, "bun.deps.json");
         if (!System.IO.File.Exists(manifestPath))
         {
             BuildUtils.Error($"Manifest not found: {manifestPath}");
@@ -39,7 +39,7 @@ public static class DependencySetup
         try { manifest = JsonSerializer.Deserialize<DepsManifest>(System.IO.File.ReadAllText(manifestPath)); }
         catch (JsonException ex)
         {
-            BuildUtils.Error($"Could not read c4ndy.deps.json: {ex.Message}");
+            BuildUtils.Error($"Could not read bun.deps.json: {ex.Message}");
             return false;
         }
         if (manifest is null) return false;
@@ -101,7 +101,7 @@ public static class DependencySetup
 
     private static bool Install(string root, DepsManifest manifest, DepEntry dep, string dest, string marker)
     {
-        string tmp = Path.Combine(Path.GetTempPath(), "c4ndy-" + dep.File);
+        string tmp = Path.Combine(Path.GetTempPath(), "bun-" + dep.File);
         try
         {
             BuildUtils.Info($"  [GET]   {dep.Name}");
@@ -161,7 +161,7 @@ public static class DependencySetup
         if (releaseBase.StartsWith("http://") || releaseBase.StartsWith("https://"))
         {
             using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(10) };
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("C4ndyBuildTool");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("BunBuildTool");
             string url = releaseBase.TrimEnd('/') + "/" + file;
 
             using var response = client.Send(new HttpRequestMessage(HttpMethod.Get, url),

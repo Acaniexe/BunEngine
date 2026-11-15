@@ -2,13 +2,13 @@
 #include <Core/Core.h>
 #include "VulkanContext.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanImage
     {
     public:
         VulkanImage();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanImage);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanImage);
 
         void Init(VulkanContext&, u32 width, u32 height, VkFormat, VkImageUsageFlags, VkImageAspectFlags);
         void Shutdown();

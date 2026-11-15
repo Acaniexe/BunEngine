@@ -2,7 +2,7 @@
 #include <Core/Logger.h>
 #include "Vertex.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
 
     VulkanPipeline::VulkanPipeline() = default;
@@ -16,7 +16,7 @@ namespace C4ndy::RHI
     {
         vkDestroyPipeline(m_Context->GetDevice(), m_Pipeline, nullptr);
         vkDestroyPipelineLayout(m_Context->GetDevice(), m_PipelineLayout, nullptr);
-        C4NDY_INFO("Vulkan pipeline destroyed.");
+        BUN_INFO("Vulkan pipeline destroyed.");
     }
 
     void VulkanPipeline::SetShaders(VulkanShader& vert, VulkanShader& frag)
@@ -137,7 +137,7 @@ namespace C4ndy::RHI
         layoutInfo.pPushConstantRanges = m_PushConstantSize > 0 ? &pushRange : nullptr;
 
         if (vkCreatePipelineLayout(m_Context->GetDevice(), &layoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create pipeline layout!");
+            BUN_FATAL("Failed to create pipeline layout!");
 
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -156,7 +156,7 @@ namespace C4ndy::RHI
         pipelineInfo.pDynamicState = &dynamicState;
 
         if (vkCreateGraphicsPipelines(m_Context->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create Vulkan graphics pipeline!");
-        C4NDY_INFO("Vulkan pipeline built.");
+            BUN_FATAL("Failed to create Vulkan graphics pipeline!");
+        BUN_INFO("Vulkan pipeline built.");
     }
 }

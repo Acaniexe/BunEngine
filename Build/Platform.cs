@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-namespace C4ndy.Build;
+namespace Bun.Build;
 
 public enum HostPlatform { Windows, macOS, Linux }
 public enum HostArch     { x64, Arm64 }
@@ -15,7 +15,7 @@ public class Platform
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) OS = HostPlatform.Windows;
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) OS = HostPlatform.macOS;
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) OS = HostPlatform.Linux;
-        else throw new PlatformNotSupportedException("C4ndy BuildTool: unsupported host OS.");
+        else throw new PlatformNotSupportedException("Bun BuildTool: unsupported host OS.");
 
         Arch = RuntimeInformation.OSArchitecture == Architecture.Arm64 ? HostArch.Arm64 : HostArch.x64;
 

@@ -5,7 +5,7 @@
 #include <array>
 #include <cstddef>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     struct Vertex
     {

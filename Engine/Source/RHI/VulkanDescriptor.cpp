@@ -1,7 +1,7 @@
 #include "VulkanDescriptor.h"
 #include <Core/Logger.h>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
 
     VulkanDescriptor::VulkanDescriptor() = default;
@@ -15,7 +15,7 @@ namespace C4ndy::RHI
     {
         vkDestroyDescriptorSetLayout(m_Context->GetDevice(), m_Layout, nullptr);
         vkDestroyDescriptorPool(m_Context->GetDevice(), m_Pool, nullptr);
-        C4NDY_INFO("Vulkan descriptor destroyed.");
+        BUN_INFO("Vulkan descriptor destroyed.");
     }
 
     void VulkanDescriptor::AddBinding(u32 binding, VkDescriptorType type, VkShaderStageFlags stageFlags)
@@ -37,7 +37,7 @@ namespace C4ndy::RHI
         layoutInfo.pBindings = m_Bindings.data();
 
         if (vkCreateDescriptorSetLayout(m_Context->GetDevice(), &layoutInfo, nullptr, &m_Layout) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create descriptor set layout!");
+            BUN_FATAL("Failed to create descriptor set layout!");
 
         std::vector<VkDescriptorPoolSize> poolSizes;
         for (auto& binding : m_Bindings)
@@ -55,7 +55,7 @@ namespace C4ndy::RHI
         poolInfo.maxSets = 1;
 
         if (vkCreateDescriptorPool(m_Context->GetDevice(), &poolInfo, nullptr, &m_Pool) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create descriptor pool!");
+            BUN_FATAL("Failed to create descriptor pool!");
 
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -64,7 +64,7 @@ namespace C4ndy::RHI
         allocInfo.pSetLayouts = &m_Layout;
 
         if (vkAllocateDescriptorSets(m_Context->GetDevice(), &allocInfo, &m_Set) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to allocate descriptor set!");
+            BUN_FATAL("Failed to allocate descriptor set!");
     }
 
     void VulkanDescriptor::UpdateBuffer(u32 binding, VkBuffer buffer, VkDeviceSize size)

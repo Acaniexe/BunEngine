@@ -1,11 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-namespace C4ndy.Build;
+namespace Bun.Build;
 
 public class BuildDescriptor
 {
     [JsonPropertyName("engine_name")]
-    public string EngineName { get; set; } = "C4ndyEngine";
+    public string EngineName { get; set; } = "BunEngine";
 
     [JsonPropertyName("version")]
     public string Version { get; set; } = "0.1.0";

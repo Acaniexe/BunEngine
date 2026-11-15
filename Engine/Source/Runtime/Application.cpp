@@ -5,7 +5,7 @@
 #include <thread>
 #include <chrono>
 
-namespace C4ndy
+namespace Bun
 {
     std::string Application::s_ExecutablePath;
 
@@ -14,18 +14,18 @@ namespace C4ndy
         if (path == nullptr || path[0] == '\0')
         {
             s_ExecutablePath.clear();
-            C4NDY_WARN("Executable path was empty; Shader path resolution may fail.");
+            BUN_WARN("Executable path was empty; Shader path resolution may fail.");
             return;
         }
 
         s_ExecutablePath = std::filesystem::absolute(path).lexically_normal().string();
-        C4NDY_INFO("Executable path: " + s_ExecutablePath);
+        BUN_INFO("Executable path: " + s_ExecutablePath);
     }
 
     Application::Application()
     {
         WindowDesc desc;
-        desc.Title = "C4ndy Engine";
+        desc.Title = "Bun Engine";
         desc.Width = 1280;
         desc.Height = 720;
 
@@ -82,7 +82,7 @@ namespace C4ndy
 
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {
-        C4NDY_UNUSED(e);
+        BUN_UNUSED(e);
         m_Running = false;
         return true;
     }

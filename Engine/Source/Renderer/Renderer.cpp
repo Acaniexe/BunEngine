@@ -11,7 +11,7 @@
 #include <limits.h>
 #endif
 
-namespace C4ndy::Renderer
+namespace Bun::Renderer
 {
 
     Renderer::Renderer() = default;
@@ -20,7 +20,7 @@ namespace C4ndy::Renderer
     {
         m_Window = &window;
 
-#if defined(C4NDY_PLATFORM_WINDOWS)
+#if defined(BUN_PLATFORM_WINDOWS)
         const char *layerOS = "Win";
 #else
         const char *layerOS = "Linux";
@@ -43,7 +43,7 @@ namespace C4ndy::Renderer
 
         if (pathLength == -1)
         {
-            C4NDY_FATAL("Failed to retrieve executable path.");
+            BUN_FATAL("Failed to retrieve executable path.");
             return;
         }
 
@@ -153,7 +153,7 @@ namespace C4ndy::Renderer
         m_CubeVertexBuffer.InitDeviceLocal(m_Context, vertices, sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         m_CubeIndexBuffer.InitDeviceLocal(m_Context, indices, sizeof(indices), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 
-        C4NDY_INFO("Renderer Initialised.");
+        BUN_INFO("Renderer Initialised.");
     }
 
     void Renderer::Shutdown()
@@ -179,14 +179,14 @@ namespace C4ndy::Renderer
         m_Swapchain.Shutdown();
         m_Context.Shutdown();
 
-        C4NDY_INFO("Renderer shutdown.");
+        BUN_INFO("Renderer shutdown.");
     }
 
     void Renderer::LoadShaders(const std::string &shaderDir)
     {
         if (!std::filesystem::exists(shaderDir))
         {
-            C4NDY_WARN("Shader directory not found: " + shaderDir);
+            BUN_WARN("Shader directory not found: " + shaderDir);
             return;
         }
 
@@ -202,7 +202,7 @@ namespace C4ndy::Renderer
 
             if (!std::filesystem::exists(fragPath))
             {
-                C4NDY_WARN("No matching .frag.spv for: " + path);
+                BUN_WARN("No matching .frag.spv for: " + path);
                 continue;
             }
 
@@ -213,7 +213,7 @@ namespace C4ndy::Renderer
             program.frag->Init(m_Context, fragPath, VK_SHADER_STAGE_FRAGMENT_BIT);
             m_Shaders.emplace(name, std::move(program));
 
-            C4NDY_INFO("Loaded shader pair: " + name);
+            BUN_INFO("Loaded shader pair: " + name);
         }
     }
 
@@ -236,9 +236,9 @@ namespace C4ndy::Renderer
             framebufferInfo.layers = 1;
 
             if (vkCreateFramebuffer(m_Context.GetDevice(), &framebufferInfo, nullptr, &m_Framebuffers[i]) != VK_SUCCESS)
-                C4NDY_FATAL("Failed to create framebuffers!");
+                BUN_FATAL("Failed to create framebuffers!");
         }
-        C4NDY_INFO("FrameBuffers created.");
+        BUN_INFO("FrameBuffers created.");
     }
 
     void Renderer::DestroyFrameBuffers()
@@ -318,7 +318,7 @@ namespace C4ndy::Renderer
         m_DepthImage.Init(m_Context, extent.width, extent.height, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT);
         CreateFrameBuffers();
 
-        C4NDY_INFO("Renderer resized to " + std::to_string(extent.width) + "x" + std::to_string(extent.height));
+        BUN_INFO("Renderer resized to " + std::to_string(extent.width) + "x" + std::to_string(extent.height));
     }
 
     /*void Renderer::DrawTestCube(const Math::Mat4& model)

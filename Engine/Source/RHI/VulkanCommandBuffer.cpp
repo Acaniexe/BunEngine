@@ -1,7 +1,7 @@
 #include "VulkanCommandBuffer.h"
 #include <Core/Logger.h>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
 
     VulkanCommandBuffer::VulkanCommandBuffer() = default;
@@ -13,7 +13,7 @@ namespace C4ndy::RHI
         CreateCommandPool();
         CreateCommandBuffer();
         CreateSyncObjects();
-        C4NDY_INFO("Vulkan command buffer initalised!");
+        BUN_INFO("Vulkan command buffer initalised!");
     }
 
     void VulkanCommandBuffer::Shutdown()
@@ -23,7 +23,7 @@ namespace C4ndy::RHI
         vkDestroySemaphore(m_Context->GetDevice(), m_ImageAvailableSemaphore, nullptr);
         vkDestroyFence(m_Context->GetDevice(), m_InFlightFence, nullptr);
         vkDestroyCommandPool(m_Context->GetDevice(), m_CommandPool, nullptr);
-        C4NDY_INFO("Vulkan command buffer destroyed!");
+        BUN_INFO("Vulkan command buffer destroyed!");
     }
 
     void VulkanCommandBuffer::Begin()
@@ -65,7 +65,7 @@ namespace C4ndy::RHI
         vkResetFences(m_Context->GetDevice(), 1, &m_InFlightFence);
 
         if (vkQueueSubmit(m_Context->GetGraphicsQueue(), 1, &submitInfo, m_InFlightFence) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to submit command buffer!");
+            BUN_FATAL("Failed to submit command buffer!");
     }
 
     void VulkanCommandBuffer::CreateCommandPool()
@@ -76,7 +76,7 @@ namespace C4ndy::RHI
         poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
         if (vkCreateCommandPool(m_Context->GetDevice(), &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create command pool!");
+            BUN_FATAL("Failed to create command pool!");
     }
 
     void VulkanCommandBuffer::CreateCommandBuffer()
@@ -88,7 +88,7 @@ namespace C4ndy::RHI
         allocInfo.commandBufferCount = 1;
 
         if (vkAllocateCommandBuffers(m_Context->GetDevice(), &allocInfo, &m_CommandBuffer) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to allocate command buffer!");
+            BUN_FATAL("Failed to allocate command buffer!");
     }
 
     void VulkanCommandBuffer::CreateSyncObjects()
@@ -102,11 +102,11 @@ namespace C4ndy::RHI
 
         if (vkCreateSemaphore(m_Context->GetDevice(), &semaphoreInfo, nullptr, &m_ImageAvailableSemaphore) != VK_SUCCESS ||
             vkCreateFence(m_Context->GetDevice(), &fenceInfo, nullptr, &m_InFlightFence) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create sync objects!");
+            BUN_FATAL("Failed to create sync objects!");
 
         m_RenderFinishedSemaphore.resize(m_ImageCount);
         for (auto& s : m_RenderFinishedSemaphore)
             if (vkCreateSemaphore(m_Context->GetDevice(), &semaphoreInfo, nullptr, &s) != VK_SUCCESS)
-                C4NDY_FATAL("Failed to create render-finished semaphore!");
+                BUN_FATAL("Failed to create render-finished semaphore!");
     }
 }

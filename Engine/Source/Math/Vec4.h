@@ -2,7 +2,7 @@
 #include "Vec3.h"
 #include "MathUtils.h"
 
-namespace C4ndy::Math
+namespace Bun::Math
 {
     struct Vec4
     {

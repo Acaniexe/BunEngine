@@ -5,16 +5,16 @@ TARGET=${1:-All}
 CONFIG=${2:-Debug}
 
 if [ "$TARGET" = "clean" ]; then
-    echo "[C4ndy] Cleaning build outputs..."
+    echo "[Bun] Cleaning build outputs..."
     rm -rf Intermediate Binaries
-    echo "[C4ndy] Clean done."
+    echo "[Bun] Clean done."
     exit 0
 fi
 
 if [ "$TARGET" = "cleanall" ]; then
-    echo "[C4ndy] Cleaning build outputs and tool binaries..."
+    echo "[Bun] Cleaning build outputs and tool binaries..."
     rm -rf Intermediate Binaries Build/bin
-    echo "[C4ndy] Full clean done."
+    echo "[Bun] Full clean done."
     exit 0
 fi
 
@@ -32,7 +32,7 @@ fi
 TOOL="./Build/bin/${RID}/C4ndyBuildTool"
 
 if [ ! -f "$TOOL" ]; then
-    echo "[C4ndy] Build tool not found. Run ./setup.sh first."
+    echo "[Bun] Build tool not found. Run ./setup.sh first."
     exit 1
 fi
 

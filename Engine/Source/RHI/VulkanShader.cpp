@@ -2,7 +2,7 @@
 #include <Core/Logger.h>
 #include <fstream>
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     VulkanShader::VulkanShader() = default;
 
@@ -11,7 +11,7 @@ namespace C4ndy::RHI
         m_Context = &context;
         m_Stage = stage;
         LoadSPIRV(path);
-        C4NDY_INFO("Vulkan shader loaded: " + path);
+        BUN_INFO("Vulkan shader loaded: " + path);
     }
 
     void VulkanShader::Shutdown()
@@ -23,7 +23,7 @@ namespace C4ndy::RHI
     {
         std::ifstream file(path, std::ios::ate | std::ios::binary);
         if (!file.is_open())
-            C4NDY_FATAL("Failed to open shader file: " + path);
+            BUN_FATAL("Failed to open shader file: " + path);
 
         usize fileSize = (usize)file.tellg();
         std::vector<char> buffer(fileSize);
@@ -37,7 +37,7 @@ namespace C4ndy::RHI
         createInfo.pCode = reinterpret_cast<const u32*>(buffer.data());
 
         if (vkCreateShaderModule(m_Context->GetDevice(), &createInfo, nullptr, &m_ShaderModule) != VK_SUCCESS)
-            C4NDY_FATAL("Failed to create shader module: " + path);
+            BUN_FATAL("Failed to create shader module: " + path);
     }
 
     VkPipelineShaderStageCreateInfo VulkanShader::GetStageInfo() const

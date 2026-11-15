@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include <Core/Logger.h>
 
-namespace C4ndy::Renderer
+namespace Bun::Renderer
 {
     void Camera::SetAspect(f32 aspect)
     {

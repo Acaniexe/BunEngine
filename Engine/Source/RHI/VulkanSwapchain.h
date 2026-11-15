@@ -2,13 +2,13 @@
 #include <Core/Core.h>
 #include "VulkanContext.h"
 
-namespace C4ndy::RHI
+namespace Bun::RHI
 {
     class VulkanSwapchain
     {
     public:
         VulkanSwapchain();
-        C4NDY_NON_COPYABLE_MOVEABLE(VulkanSwapchain);
+        BUN_NON_COPYABLE_MOVEABLE(VulkanSwapchain);
 
         void Init(VulkanContext& context, u32 width, u32 height);
         void Shutdown();

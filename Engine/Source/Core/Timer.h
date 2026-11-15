@@ -4,7 +4,7 @@
 
 using TimePoint = std::chrono::high_resolution_clock::time_point;
 
-namespace C4ndy
+namespace Bun
 {
     class Timer
     {

@@ -8,48 +8,48 @@ if "%TARGET%"=="" set TARGET=All
 if "%CONFIG%"=="" set CONFIG=Debug
 
 if /i "%TARGET%"=="clean" (
-    echo [C4ndy] Cleaning build outputs...
+    echo [Bun] Cleaning build outputs...
     if exist Intermediate rmdir /s /q Intermediate
     if exist Binaries     rmdir /s /q Binaries
     if exist vc140.pdb del vc140.pdb
-    echo [C4ndy] Clean done.
+    echo [Bun] Clean done.
     exit /b 0
 )
 
 if /i "%TARGET%"=="cleanall" (
-    echo [C4ndy] Cleaning build outputs and tool binaries...
+    echo [Bun] Cleaning build outputs and tool binaries...
     if exist Intermediate rmdir /s /q Intermediate
     if exist Binaries     rmdir /s /q Binaries
     if exist Build\bin    rmdir /s /q Build\bin
     if exist Build\obj    rmdir /s /q Build\obj
     if exist vc140.pdb del vc140.pdb
-    echo [C4ndy] Full clean done.
+    echo [Bun] Full clean done.
     exit /b 0
 )
 
 if /i "%TARGET%"=="buildtool" (
-    echo [C4ndy] Cleaning tool...
+    echo [Bun] Cleaning tool...
     if exist Intermediate rmdir /s /q Intermediate
     if exist Binaries     rmdir /s /q Binaries
     if exist Build\bin    rmdir /s /q Build\bin
     if exist Build\obj    rmdir /s /q Build\obj
 
-    echo [C4ndy] Clean done. Building tool...
-    dotnet publish .\Build\C4ndyBuildTool.csproj -c Release -r win-x64 --self-contained ^
+    echo [Bun] Clean done. Building tool...
+    dotnet publish .\Build\BunBuildTool.csproj -c Release -r win-x64 --self-contained ^
         -p:PublishSingleFile=true -o .\Build\bin\win-x64 > nul
-    if exist Build\bin\win-x64\C4ndyBuildTool.exe (
-        echo [C4ndy] Build successful.
+    if exist Build\bin\win-x64\BunBuildTool.exe (
+        echo [Bun] Build successful.
         exit /b 0
     ) else (
-        echo [C4ndy] Build Failed.
+        echo [Bun] Build Failed.
         exit /b 1
     )
 )
 
-set TOOL=.\Build\bin\win-x64\C4ndyBuildTool.exe
+set TOOL=.\Build\bin\win-x64\BunBuildTool.exe
 
 if not exist "%TOOL%" (
-    ech0 [C4ndy] Build tool not found. Run setup.bat first.
+    echo [Bun] Build tool not found. Run setup.bat first.
     exit /b 1
 )
 

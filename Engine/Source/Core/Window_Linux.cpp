@@ -1,6 +1,6 @@
 #include "Core.h"
 
-#if defined(C4NDY_PLATFORM_LINUX)
+#if defined(BUN_PLATFORM_LINUX)
 
 #include "Window.h"
 #include "Input.h"
@@ -8,7 +8,7 @@
 #include <X11/Xlib.h>
 #include <cstdlib>
 
-namespace C4ndy
+namespace Bun
 {
     class LinuxWindow : public Window
     {

@@ -1,6 +1,6 @@
 #include "Timer.h"
 
-namespace C4ndy
+namespace Bun
 {
     Timer::Timer()
     {

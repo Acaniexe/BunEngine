@@ -1,7 +1,7 @@
 #pragma once
 #include "Core.h"
 
-namespace C4ndy
+namespace Bun
 {
     namespace Key
     {

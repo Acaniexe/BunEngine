@@ -1,5 +1,5 @@
 using System.Diagnostics;
-namespace C4ndy.Build;
+namespace Bun.Build;
 
 public static class Locator
 {
