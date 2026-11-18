@@ -29,7 +29,7 @@ else
     RID=$( [ "$ARCH" = "aarch64" ] && echo "linux-arm64" || echo "linux-x64" )
 fi
 
-TOOL="./Build/bin/${RID}/C4ndyBuildTool"
+TOOL="./Build/bin/${RID}/BunBuildTool"
 
 if [ ! -f "$TOOL" ]; then
     echo "[Bun] Build tool not found. Run ./setup.sh first."
