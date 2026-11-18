@@ -67,6 +67,7 @@ namespace Bun
             Input::Update();
         }
 
+        m_Renderer.WaitIdle();
         OnShutdown();
         m_Renderer.Shutdown();
     }

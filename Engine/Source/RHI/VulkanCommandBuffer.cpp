@@ -23,7 +23,7 @@ namespace Bun::RHI
         vkDestroySemaphore(m_Context->GetDevice(), m_ImageAvailableSemaphore, nullptr);
         vkDestroyFence(m_Context->GetDevice(), m_InFlightFence, nullptr);
         vkDestroyCommandPool(m_Context->GetDevice(), m_CommandPool, nullptr);
-        BUN_INFO("Vulkan command buffer destroyed!");
+        BUN_INFO("Vulkan command buffer destroyed.");
     }
 
     void VulkanCommandBuffer::Begin()

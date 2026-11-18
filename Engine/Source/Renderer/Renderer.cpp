@@ -336,16 +336,20 @@ namespace Bun::Renderer
         vkCmdDrawIndexed(cmd, 36, 1, 0, 0, 0);
     }*/
 
-    void Renderer::DrawCube(const PushData &push)
+    void Renderer::BindMeshState(const PushData& push)
     {
         VkCommandBuffer cmd = m_CommandBuffer.GetCommandBuffer();
         m_MeshPipeline.Bind(cmd);
 
         VkDescriptorSet set = m_CameraDescriptor.GetSet();
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_MeshPipeline.GetLayout(), 0, 1, &set, 0, nullptr);
-
         vkCmdPushConstants(cmd, m_MeshPipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushData), &push);
+    }
 
+    void Renderer::DrawCube(const PushData &push)
+    {
+        BindMeshState(push);
+        VkCommandBuffer cmd = m_CommandBuffer.GetCommandBuffer();
         VkBuffer vb = m_CubeVertexBuffer.GetBuffer();
         VkDeviceSize offset = 0;
         vkCmdBindVertexBuffers(cmd, 0, 1, &vb, &offset);
@@ -353,21 +357,41 @@ namespace Bun::Renderer
         vkCmdDrawIndexed(cmd, 36, 1, 0, 0, 0);
     }
 
+    Scope<Mesh> Renderer::CreateMesh(const Assets::MeshData& data)
+    {
+        auto mesh = MakeScope<Mesh>();
+        mesh->Init(m_Context, data);
+        return mesh;
+    }
+
+    void Renderer::DrawMesh(const Mesh& mesh, const Math::Mat4& model, const Math::Vec3& color)
+    {
+        BindMeshState({ model, Math::Vec4(0.f), Math::Vec4(color.x, color.y, color.z, 1.) });
+        VkCommandBuffer cmd = m_CommandBuffer.GetCommandBuffer();
+        mesh.Bind(cmd);
+        mesh.Draw(cmd);
+    }
+
     void Renderer::DrawTestCube(const Math::Mat4 &model)
     {
-        DrawCube({model, Math::Vec4(0.f)});
+        DrawCube({model, Math::Vec4(0.8f, 0.35f, 0.5f, 1.f)});
     }
 
     void Renderer::DrawLightMarker()
     {
         Math::Mat4 model = Math::Mat4::Translation(Math::Vec3(m_LightPos.x, m_LightPos.y, m_LightPos.z)) *
                            Math::Mat4::Scale(Math::Vec3(0.1f));
-        DrawCube({model, Math::Vec4(1.f, 0.9f, 0.4f, 1.f)});
+        DrawCube({model, Math::Vec4(1.f)});
     }
 
     void Renderer::SetCamera(const Math::Mat4 &view, const Math::Mat4 &projection)
     {
         CameraData data{view, projection, m_LightPos};
         m_CameraBuffer.WriteData(&data, sizeof(data));
+    }
+
+    void Renderer::SetLightPosition(const Math::Vec3& position)
+    {
+        m_LightPos = Math::Vec4(position.x, position.y, position.z, 0.f);
     }
 }

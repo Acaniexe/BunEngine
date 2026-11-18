@@ -3,6 +3,7 @@
 #include <Core/Window.h>
 #include <RHI/RHI.h>
 #include <Math/Math.h>
+#include "Mesh.h"
 
 namespace Bun::Renderer
 {
@@ -18,6 +19,7 @@ namespace Bun::Renderer
         bool BeginFrame();
         void EndFrame();
         void OnResize(u32 width, u32 height);
+        void WaitIdle() { vkDeviceWaitIdle(m_Context.GetDevice()); }
 
         VkCommandBuffer GetCommandBuffer() const { return m_CommandBuffer.GetCommandBuffer(); }
         void DrawTestCube(const Math::Mat4& model);
@@ -34,8 +36,13 @@ namespace Bun::Renderer
         {
             Math::Mat4 model;
             Math::Vec4 params;
+            Math::Vec4 baseColor;
         };
         void DrawLightMarker();
+        void SetLightPosition(const Math::Vec3& position);
+
+        Scope<Mesh> CreateMesh(const Assets::MeshData& data);
+        void DrawMesh(const Mesh& mesh, const Math::Mat4& model, const Math::Vec3& color);
 
     private:
         Window* m_Window = nullptr;
@@ -68,5 +75,6 @@ namespace Bun::Renderer
         void CreateFrameBuffers();
         void DestroyFrameBuffers();
         void DrawCube(const PushData& push);
+        void BindMeshState(const PushData& push);
     };
 }

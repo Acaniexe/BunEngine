@@ -44,7 +44,7 @@
       "target": "Engine",
       "source_dirs": ["Engine/Source/Renderer"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
-      "dependencies": ["Core", "Math", "RHI"],
+      "dependencies": ["Core", "Math", "RHI", "Assets"],
       "defines": ["BUN_ENGINE"]
     },
     {
@@ -71,7 +71,7 @@
       "target": "Engine",
       "source_dirs": ["Engine/Source/Assets"],
       "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
-      "dependencies": ["Core", "RHI"],
+      "dependencies": ["Core", "Math", "RHI"],
       "defines": ["BUN_ENGINE"]
     },
     {

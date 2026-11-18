@@ -2,7 +2,7 @@
 
 layout(set = 0, binding = 0) uniform Camera{ mat4 view; mat4 projection; vec4 lightPos; } camera;
 
-layout(push_constant) uniform Push { mat4 model; vec4 params; } push;
+layout(push_constant) uniform Push { mat4 model; vec4 params; vec4 baseColor; } push;
 
 layout(location = 0) in vec3 fragNormal;
 layout(location = 1) in vec2 fragUV;
@@ -29,6 +29,6 @@ void main()
     float attenuation = 1.0 / (1.0 + 0.15 * dist * dist);
     vec3 ambient = mix(vec3(0.03, 0.03, 0.05), vec3(0.15, 0.15, 0.20), n.y * 0.5 + 0.5);
 
-    vec3 albedo = vec3(0.8, 0.35, 0.5);
+    vec3 albedo = push.baseColor.xyz;
     outColor = vec4(albedo * (ambient + diffuse * attenuation), 1.0);
 }
