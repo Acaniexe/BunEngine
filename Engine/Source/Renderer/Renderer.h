@@ -40,6 +40,7 @@ namespace Bun::Renderer
         };
         void DrawLightMarker();
         void SetLightPosition(const Math::Vec3& position);
+        void DrawDebugBox(const Math::Vec3& center, const Math::Vec3& size, const Math::Vec3& color);
 
         Scope<Mesh> CreateMesh(const Assets::MeshData& data);
         void DrawMesh(const Mesh& mesh, const Math::Mat4& model, const Math::Vec3& color);

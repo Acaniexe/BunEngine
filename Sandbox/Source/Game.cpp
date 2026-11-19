@@ -32,6 +32,19 @@ protected:
             for (auto& mat : scene.materials)
                 std::printf("Material %s: colour %.2f %.2f %.2f, texture '%s'\n", 
                     mat.name.c_str(), mat.baseColor.x, mat.baseColor.y, mat.baseColor.z, mat.diffuseTexture.c_str());
+
+            for (auto& m : scene.meshes)
+            {
+                Math::Vec3 mn(1e9f), mx(-1e9f);
+                for (auto& v : m.data.vertices)
+                {
+                    mn.x = Math::Min(mn.x, v.position.x); mx.x = Math::Max(mx.x, v.position.x);
+                    mn.y = Math::Min(mn.y, v.position.y); mx.y = Math::Max(mx.y, v.position.y);
+                    mn.z = Math::Min(mn.z, v.position.z); mx.z = Math::Max(mx.z, v.position.z);
+                }
+                std::printf("  %-26s centre %.2f %.2f %.2f\n", m.name.c_str(),
+                    (mn.x + mx.x) * 0.5f, (mn.y + mx.y) * 0.5f, (mn.z + mx.z) * 0.5f);
+            }
         }
     }
 
@@ -80,6 +93,23 @@ protected:
         if (m_Meshes.empty()) GetRenderer().DrawTestCube(model);
         for (auto& m : m_Meshes) GetRenderer().DrawMesh(*m.mesh, model, m.color);
         GetRenderer().DrawLightMarker();
+        DrawAxisGizmo();
+    }
+
+    void DrawAxisGizmo()
+    {
+        Math::Vec3 fwd = m_Camera.GetForward();
+        Math::Vec3 right = m_Camera.GetRight();
+        Math::Vec3 up = Math::Vec3::Cross(right, fwd);
+
+        Math::Vec3 o = m_Camera.GetPosition() + fwd * 3.0f + right * -1.4f + up * -0.8f;
+
+        const f32 len = -.4f, t = 0.03f;
+        auto& r = GetRenderer();
+        r.DrawDebugBox(o + Math::Vec3(len * 0.5f, 0.f, 0.f), Math::Vec3(len, t, t), Math::Vec3(1.0f, 0.15f, 0.15f));
+        r.DrawDebugBox(o + Math::Vec3(0.f, len * 0.5, 0.f), Math::Vec3(t, len, t), Math::Vec3(0.2f, 1.0f, 0.2f));
+        r.DrawDebugBox(o + Math::Vec3(0.f, 0.f, len * 0.5f), Math::Vec3(t, t, len), Math::Vec3(0.2f, 1.0f, 1.0f));
+        r.DrawDebugBox(o, Math::Vec3(t * 1.6f), Math::Vec3(1.f));
     }
 
 private:

@@ -94,8 +94,8 @@ namespace Bun::Assets
             std::string tag;
             ss >> tag;
 
-            if (tag == "v") { Math::Vec3 p; ss >> p.x >> p.y >> p.z; positions.push_back(p); }
-            else if (tag == "vn") { Math::Vec3 n; ss >> n.z >> n.y >> n.z; normals.push_back(n); }
+            if (tag == "v")       { Math::Vec3 p; ss >> p.x >> p.y >> p.z; positions.push_back(p); }
+            else if (tag == "vn") { Math::Vec3 n; ss >> n.x >> n.y >> n.z; normals.push_back(n); }
             else if (tag == "vt") { Math::Vec2 t; ss >> t.x >> t.y; t.y = 1.0f - t.y; uvs.push_back(t); }
             else if (tag == "o")
             {

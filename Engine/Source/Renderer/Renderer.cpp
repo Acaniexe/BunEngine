@@ -394,4 +394,10 @@ namespace Bun::Renderer
     {
         m_LightPos = Math::Vec4(position.x, position.y, position.z, 0.f);
     }
+
+    void Renderer::DrawDebugBox(const Math::Vec3& center, const Math::Vec3& size, const Math::Vec3& color)
+    {
+        Math::Mat4 model = Math::Mat4::Translation(center) * Math::Mat4::Scale(size);
+        DrawCube({ model, Math::Vec4(color.x, color.y, color.z, 1.f), Math::Vec4(1.f) });
+    }
 }

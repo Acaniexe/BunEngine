@@ -13,6 +13,9 @@ namespace Bun::Renderer
         Math::Vec3 GetRight() const;
         Math::Mat4 GetView() const;
         Math::Mat4 GetProjection() const;
+
+        Math::Vec3 GetPosition() const { return m_Position; }
+
     private:
         Math::Vec3 m_Position = Math::Vec3(0.f, 0.f, 2.f);
         f32 m_Yaw = 0.f;
