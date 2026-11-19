@@ -11,12 +11,15 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [Bun] Building build tool...
-dotnet publish .\Build\BunBuildTool.csproj -c Release -r win-x64 --self-contained ^
-    -p:PublishSingleFile=true -v q --nologo -o .\Build\bin\win-x64
-if errorlevel 1 (
-    echo [Bun] Failed to build the build tool.
-    exit /b 1
+set TOOL=.\Build\bin\win-x64\BunBuildTool.exe
+if not exist %TOOL% (
+    echo [Bun] Building build tool...
+    dotnet publish .\Build\BunBuildTool.csproj -c Release -r win-x64 --self-contained ^
+        -p:PublishSingleFile=true -v q --nologo -o .\Build\bin\win-x64
+    if errorlevel 1 (
+        echo [Bun] Failed to build the build tool.
+        exit /b 1
+    )
 )
 
 .\Build\bin\win-x64\BunBuildTool.exe %MODE%

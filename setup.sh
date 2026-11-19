@@ -27,12 +27,16 @@ if [ "$OS" = "Darwin" ]; then
 else
     RID=$( [ "$ARCH" = "aarch64" ] && echo "linux-arm64" || echo "linux-x64" )
 fi
-TOOL="./Build/bin/${RID}/BunBuildTool"
 
-echo "[Bun] Building build tool..."
-dotnet publish ./Build/BunBuildTool.csproj -c Release -r "$RID" --self-contained \
-    -p:PublishSingleFile=true -p:InvariantGlobalization=true -v q --nologo \
-    -o "./Build/bin/${RID}"
-chmod +x "$TOOL"
+TOOL="./Build/bin/${RID}/BunBuildTool"
+if [ ! -f "%TOOL" ]; then
+    echo "[Bun] Building build tool..."
+    dotnet publish ./Build/BunBuildTool.csproj -c Release -r "$RID" --self-contained \
+        -p:PublishSingleFile=true -p:InvariantGlobalization=true -v q --nologo \
+        -o "./Build/bin/${RID}"
+    chmod +x "$TOOL"
+else
+    echo "[Bun] Build tool already exists. Skipping build."
+fi
 
 "$TOOL" "$MODE"
