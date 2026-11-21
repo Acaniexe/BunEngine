@@ -68,7 +68,7 @@ namespace Bun
             if (enabled)
             {
                 ::Window root, child; int rx, ry, wx, wy; unsigned int mask;
-                XQueryPointer(m_Displaym m_Window, &root, &child, &rx, &ry, &wx, &wy, &mask);
+                XQueryPointer(m_Display, m_Window, &root, &child, &rx, &ry, &wx, &wy, &mask);
                 m_LastX = wx; m_LastY = wy;
                 m_VirtualX = (f32)wx; m_VirtualY = (f32)wy;
             }
@@ -197,7 +197,7 @@ namespace Bun
                 XFlush(m_Display);
                 wx = tx; wy = ty;
             }
-            m_LastX = wxl m_LastY = wy;
+            m_LastX = wx; m_LastY = wy;
 
             Input::OnMouseMove(m_VirtualX, m_VirtualY);
             MouseMovedEvent e(m_VirtualX, m_VirtualY);
