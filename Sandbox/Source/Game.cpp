@@ -1,12 +1,13 @@
 #include <Runtime/Application.h>
 #include <Core/Input.h>
 #include <Renderer/Camera.h>
-
 #include <Assets/ObjLoader.h>
 #include <Assets/ImportedScene.h>
 #include <Assets/MeshData.h>
 #include <Renderer/Mesh.h>
+#include <Assets/ImageLoader.h>
 #include <cstdio>
+#include <filesystem>
 
 using namespace Bun;
 
@@ -16,16 +17,36 @@ protected:
 
     void OnInit() override
     {
+        const std::filesystem::path modelDir = "Sandbox/Content/Models";
         Assets::ImportedScene scene;
-        if (Assets::ObjLoader::Load("Sandbox/Content/Models/PlayArea.obj", scene))
+        if (Assets::ObjLoader::Load((modelDir / "PlayArea.obj").string(), scene))
         {
+            m_MaterialTextures.resize(scene.materials.size());
+            for (usize i = 0; i < scene.materials.size(); i++)
+            {
+                const auto& mat = scene.materials[i];
+                if (mat.diffuseTexture.empty()) continue;
+
+                Assets::ImageData img;
+                if (Assets::ImageLoader::Load((modelDir / mat.diffuseTexture).string(), img))
+                    m_MaterialTextures[i] = GetRenderer().CreateTexture(img);
+                else
+                    std::printf("Texture load FAILED: %s\n", mat.diffuseTexture.c_str());
+            }
+
             for (auto& m : scene.meshes)
             {
                 Math::Vec3 color(0.6f);
-                if (m.materialIndex >= 0)
-                    color = scene.materials[m.materialIndex].baseColor;
+                Renderer::Texture* texture = nullptr;
 
-                m_Meshes.push_back({ GetRenderer().CreateMesh(m.data), color });
+                if (m.materialIndex >= 0)
+                {
+                    color = scene.materials[m.materialIndex].baseColor;
+                    texture = m_MaterialTextures[m.materialIndex].get();
+                    if (texture) color = Math::Vec3(1.0f);
+                }
+            
+                m_Meshes.push_back({ GetRenderer().CreateMesh(m.data), color, texture });
             }
             std::printf("Imported %zu meshes, %zu materials\n", scene.meshes.size(), scene.materials.size());
 
@@ -49,6 +70,7 @@ protected:
     }
 
     void OnShutdown() override{
+        for (auto& t : m_MaterialTextures) if (t) t->Shutdown();
         for (auto& m : m_Meshes) m.mesh->Shutdown();
     }
 
@@ -61,6 +83,10 @@ protected:
         const f32 angle = m_Time * angularSpeed;
 
         GetRenderer().SetLightPosition({radius * Math::Cos(angle), height, radius * Math::Sin(angle)});
+
+        if (Input::IsMouseButtonPressed(Mouse::Right)) GetWindow().SetCursorWrap(true);
+        if (Input::IsMouseButtonReleased(Mouse::Right)) GetWindow().SetCursorWrap(false);
+
 
         if (Input::IsMouseButtonDown(Mouse::Right))
         {
@@ -91,7 +117,7 @@ protected:
         GetRenderer().DrawLightMarker();*/
 
         if (m_Meshes.empty()) GetRenderer().DrawTestCube(model);
-        for (auto& m : m_Meshes) GetRenderer().DrawMesh(*m.mesh, model, m.color);
+        for (auto& m : m_Meshes) GetRenderer().DrawMesh(*m.mesh, model, m.color, m.texture);
         GetRenderer().DrawLightMarker();
         DrawAxisGizmo();
     }
@@ -119,9 +145,11 @@ private:
     {
         Scope<Renderer::Mesh> mesh;
         Math::Vec3 color;
+        Renderer::Texture* texture = nullptr;
     };
 
     std::vector<SceneMesh> m_Meshes;
+    std::vector<Scope<Renderer::Texture>> m_MaterialTextures;
 };
 
 int main(int argc, char* argv[])

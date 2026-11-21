@@ -13,6 +13,7 @@ namespace Bun::RHI
         void Init(VulkanContext&, u32 width, u32 height, VkFormat, VkImageUsageFlags, VkImageAspectFlags);
         void Shutdown();
         void TransitionLayout(VkCommandBuffer, VkImageLayout newLayout);
+        void UploadPixels(const void* data, VkDeviceSize size);
 
         VkImage GetImage() const { return m_Image; }
         VkImageView GetView() const { return m_View; }

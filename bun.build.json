@@ -70,7 +70,7 @@
       "kind": "StaticLib",
       "target": "Engine",
       "source_dirs": ["Engine/Source/Assets"],
-      "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include"],
+      "include_dirs": ["Engine/Source", "Engine/ThirdParty/Vulkan/Include", "Engine/ThirdParty/stb"],
       "dependencies": ["Core", "Math", "RHI"],
       "defines": ["BUN_ENGINE"]
     },

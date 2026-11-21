@@ -14,6 +14,8 @@ namespace Bun::RHI
         void Shutdown();
         void SetLayerPath(const std::string& dir) { m_LayerPath = dir; }
 
+        void ImmediateSubmit(const std::function<void(VkCommandBuffer)>& record);
+
         VkInstance GetInstance() const { return m_Instance; }
         VkPhysicalDevice GetPhysicalDevice() const { return m_PhysicalDevice; }
         VkDevice GetDevice() const { return m_Device; }

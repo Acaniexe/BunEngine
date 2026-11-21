@@ -8,6 +8,7 @@ layout(location = 0) in vec3 fragNormal;
 layout(location = 1) in vec2 fragUV;
 layout(location = 2) in vec3 fragWorldPos;
 layout(location = 0) out vec4 outColor;
+layout(set = 1, binding = 0) uniform sampler2D baseTexture;
 
 void main()
 {
@@ -31,7 +32,7 @@ void main()
     float attenuation = 1.0 / (1.0 + 0.35 * dist * dist);
     float intensity = 3.0;
 
-    vec3 albedo = push.baseColor.xyz;
+    vec3 albedo = push.baseColor.xyz * texture(baseTexture, fragUV).rgb;
     vec3 ambient = albedo * mix(vec3(0.06, 0.06, 0.08), vec3(0.18, 0.18, 0.22), n.y * 0.5 + 0.5);
     vec3 diffuse = albedo * ndl * attenuation * intensity;
     float spec = pow(max(dot(n, h), 0.0), 48.0) * step(0.0, ndl) * attenuation * intensity;

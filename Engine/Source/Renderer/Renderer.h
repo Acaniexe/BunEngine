@@ -4,6 +4,7 @@
 #include <RHI/RHI.h>
 #include <Math/Math.h>
 #include "Mesh.h"
+#include "Texture.h"
 
 namespace Bun::Renderer
 {
@@ -42,8 +43,9 @@ namespace Bun::Renderer
         void SetLightPosition(const Math::Vec3& position);
         void DrawDebugBox(const Math::Vec3& center, const Math::Vec3& size, const Math::Vec3& color);
 
+        Scope<Texture> CreateTexture(const Assets::ImageData& image);
         Scope<Mesh> CreateMesh(const Assets::MeshData& data);
-        void DrawMesh(const Mesh& mesh, const Math::Mat4& model, const Math::Vec3& color);
+        void DrawMesh(const Mesh& mesh, const Math::Mat4& model, const Math::Vec3& color, const Texture* texture = nullptr);
 
     private:
         Window* m_Window = nullptr;
@@ -61,6 +63,8 @@ namespace Bun::Renderer
         RHI::VulkanBuffer m_CubeIndexBuffer;
         RHI::VulkanBuffer m_CameraBuffer;
         RHI::VulkanDescriptor m_CameraDescriptor;
+        RHI::VulkanSampler m_Sampler;
+        Scope<Texture> m_WhiteTexture;
 
         Math::Vec4 m_LightPos = Math::Vec4(1.0f, 1.0f, 1.5f, 0.f);
 
@@ -76,6 +80,6 @@ namespace Bun::Renderer
         void CreateFrameBuffers();
         void DestroyFrameBuffers();
         void DrawCube(const PushData& push);
-        void BindMeshState(const PushData& push);
+        void BindMeshState(const PushData& push, const Texture* texture = nullptr);
     };
 }

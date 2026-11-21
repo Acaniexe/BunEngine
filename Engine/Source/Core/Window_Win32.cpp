@@ -6,6 +6,8 @@
 #include "Input.h"
 #include "Logger.h"
 #include <Windows.h>
+#include <windowsx.h>
+#include <cstdio>
 
 namespace Bun
 {
@@ -58,6 +60,24 @@ namespace Bun
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
+            if (m_CursorWrap) PollCursorWrap();
+        }
+
+        void SetCursorWrap(bool enabled) override
+        {
+            if (enabled == m_CursorWrap) return;
+            m_CursorWrap = enabled;
+
+            if (enabled)
+            {
+                POINT p; GetCursorPos(&p); ScreenToClient(m_Hwnd, &p);
+                m_LastScreen = p;
+                ScreenToClient(m_Hwnd, &p);
+                m_VirtualX = (f32)p.x; m_VirtualY = (f32)p.y;
+                SetCapture(m_Hwnd);
+            }
+            else
+                ReleaseCapture();
         }
 
         u32 GetWidth() const override { return m_Width; }
@@ -87,6 +107,34 @@ namespace Bun
                 return window->HandleMessage(hwnd, msg, wParam, lParam);
             
             return DefWindowProc(hwnd, msg, wParam, lParam);
+        }
+
+        void PollCursorWrap()
+        {
+            POINT now; GetCursorPos(&now);
+
+            m_VirtualX += (f32)(now.x - m_LastScreen.x);
+            m_VirtualY += (f32)(now.y - m_LastScreen.y);
+
+            RECT rc; GetClientRect(m_Hwnd, &rc);
+            POINT tl = { 0, 0 }, br = { rc.right, rc.bottom };
+            ClientToScreen(m_Hwnd, &tl);
+            ClientToScreen(m_Hwnd, &br);
+
+            const int margin = 8;
+            POINT target = now;
+            if (now.x <= tl.x + margin) target.x = br.x - margin - 2;
+            else if (now.x >= br.x - margin) target.x = tl.x + margin + 2;
+            if (now.y <= tl.y + margin) target.y = br.y - margin - 2;
+            else if (now.y >= br.y - margin) target.y = tl.y + margin + 2;
+
+            if ((target.x != now.x || target.y != now.y) && SetCursorPos(target.x, target.y))
+                now = target;
+            m_LastScreen = now;
+
+            Input::OnMouseMove(m_VirtualX, m_VirtualY);
+            MouseMovedEvent e(m_VirtualX, m_VirtualY);
+            if (m_EventCallback) m_EventCallback(e);
         }
 
         LRESULT HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -160,8 +208,9 @@ namespace Bun
 
                 case WM_MOUSEMOVE:
                 {
-                    f32 x = (f32)LOWORD(lParam);
-                    f32 y = (f32)HIWORD(lParam);
+                    if (m_CursorWrap) return 0;
+                    f32 x = (f32)GET_X_LPARAM(lParam);
+                    f32 y = (f32)GET_Y_LPARAM(lParam);
                     Input::OnMouseMove(x, y);
                     MouseMovedEvent e(x, y);
                     if (m_EventCallback) m_EventCallback(e);
@@ -184,7 +233,10 @@ namespace Bun
         u32 m_Width, m_Height;
         bool m_VSync;
         bool m_ShouldClose = false;
-        EventCallbackFn m_EventCallback;      
+        EventCallbackFn m_EventCallback;     
+        bool m_CursorWrap = false;
+        f32 m_VirtualX = 0.f, m_VirtualY = 0.f; 
+        POINT m_LastScreen{};
     };
 
     Scope<Window> Window::Create(const WindowDesc& desc)

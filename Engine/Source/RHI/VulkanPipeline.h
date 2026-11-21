@@ -17,7 +17,7 @@ namespace Bun::RHI
 
         void SetShaders(VulkanShader& vert, VulkanShader& frag);
         void SetRenderPass(VulkanRenderPass&);
-        void SetDescriptorLayout(VkDescriptorSetLayout);
+        void AddDescriptorLayout(VkDescriptorSetLayout layout) { m_DescriptorLayouts.push_back(layout); }
         void SetExtent(VkExtent2D);
         void SetPushConstantSize(u32 size) { m_PushConstantSize = size; }
 
@@ -32,7 +32,7 @@ namespace Bun::RHI
         VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
         VkPipelineShaderStageCreateInfo m_ShaderStages[2]{};
         VkRenderPass m_RenderPass = VK_NULL_HANDLE;
-        VkDescriptorSetLayout m_DescriptorLayout = VK_NULL_HANDLE;
+        std::vector<VkDescriptorSetLayout> m_DescriptorLayouts;
         VkExtent2D m_Extent{};
         bool m_UseVertexInput = false;
         u32 m_PushConstantSize = 0;

@@ -32,6 +32,10 @@
 
     { "name": "vulkan-licenses", "platform": "all", "file": "licenses.zip",
       "sha256": "EA2E4500A1799D351208CA64985B2A4F1A3DF04771340757376F34AF268EB3CB",
-      "extract_to": "Engine/ThirdParty/Vulkan/Licenses" }
+      "extract_to": "Engine/ThirdParty/Vulkan/Licenses" },
+
+    { "name": "stb", "platform": "all", "file": "stb.zip",
+      "sha256": "97A5E62485F23E7D165E6A373E5BB79663AF239AC81B90659F56F90C2EA9580E",
+      "extract_to": "Engine/ThirdParty/stb", "check": "stb_image.h" }
   ]
 }

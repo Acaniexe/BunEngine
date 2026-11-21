@@ -30,11 +30,6 @@ namespace Bun::RHI
         m_RenderPass = renderPass.GetRenderPass();
     }
 
-    void VulkanPipeline::SetDescriptorLayout(VkDescriptorSetLayout layout)
-    {
-        m_DescriptorLayout = layout;
-    }
-
     void VulkanPipeline::SetExtent(VkExtent2D extent)
     {
         m_Extent = extent;
@@ -131,8 +126,8 @@ namespace Bun::RHI
 
         VkPipelineLayoutCreateInfo layoutInfo{};
         layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        layoutInfo.setLayoutCount = m_DescriptorLayout != VK_NULL_HANDLE ? 1 : 0;
-        layoutInfo.pSetLayouts = m_DescriptorLayout != VK_NULL_HANDLE ? &m_DescriptorLayout : nullptr;
+        layoutInfo.setLayoutCount = (u32)m_DescriptorLayouts.size();
+        layoutInfo.pSetLayouts = m_DescriptorLayouts.data();
         layoutInfo.pushConstantRangeCount = m_PushConstantSize > 0 ? 1 : 0;
         layoutInfo.pPushConstantRanges = m_PushConstantSize > 0 ? &pushRange : nullptr;
 

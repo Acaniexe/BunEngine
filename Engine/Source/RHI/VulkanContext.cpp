@@ -268,4 +268,38 @@ namespace Bun::RHI
 
         BUN_INFO("Vulkan logical device created.");
     }
+
+    void VulkanContext::ImmediateSubmit(const std::function<void(VkCommandBuffer)>& record)
+    {
+        VkCommandPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        poolInfo.queueFamilyIndex = m_GraphicsQueueFamily;
+        poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+        VkCommandPool pool = VK_NULL_HANDLE;
+        vkCreateCommandPool(m_Device, &poolInfo, nullptr, &pool);
+
+        VkCommandBufferAllocateInfo alloc{};
+        alloc.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        alloc.commandPool = pool;
+        alloc.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        alloc.commandBufferCount = 1;
+        VkCommandBuffer cmd = VK_NULL_HANDLE;
+        vkAllocateCommandBuffers(m_Device, &alloc, &cmd);
+
+        VkCommandBufferBeginInfo begin{};
+        begin.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        begin.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        vkBeginCommandBuffer(cmd, &begin);
+        record(cmd);
+        vkEndCommandBuffer(cmd);
+
+        VkSubmitInfo submit{};
+        submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit.commandBufferCount = 1;
+        submit.pCommandBuffers = &cmd;
+        vkQueueSubmit(m_GraphicsQueue, 1, &submit, VK_NULL_HANDLE);
+        vkQueueWaitIdle(m_GraphicsQueue);
+
+        vkDestroyCommandPool(m_Device, pool, nullptr);
+    }
 }

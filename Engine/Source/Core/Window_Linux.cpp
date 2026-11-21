@@ -58,6 +58,20 @@ namespace Bun
                 XNextEvent(m_Display, &ev);
                 HandleEvent(ev);
             }
+            if (m_CursorWrap) PollCursorWrap();
+        }
+
+        void SetCursorWrap(bool enabled) override
+        {
+            if (enabled == m_CursorWrap) return;
+            m_CursorWrap = enabled;
+            if (enabled)
+            {
+                ::Window root, child; int rx, ry, wx, wy; unsigned int mask;
+                XQueryPointer(m_Displaym m_Window, &root, &child, &rx, &ry, &wx, &wy, &mask);
+                m_LastX = wx; m_LastY = wy;
+                m_VirtualX = (f32)wx; m_VirtualY = (f32)wy;
+            }
         }
 
         u32 GetWidth() const override { return m_Width; }
@@ -151,6 +165,7 @@ namespace Bun
 
                 case MotionNotify:
                 {
+                    if (m_CursorWrap) break;
                     f32 x = (f32)ev.xmotion.x;
                     f32 y = (f32)ev.xmotion.y;
                     Input::OnMouseMove(x, y);
@@ -161,6 +176,34 @@ namespace Bun
             }
         }
 
+        void PollCursorWrap()
+        {
+            ::Window root, child; int rx, ry, wx, wy; unsigned int mask;
+            if (!XQueryPointer(m_Display, m_Window, &root, &child, &rx, &ry, &wx, &wy, &mask)) return;
+
+            m_VirtualX += (f32)(wx - m_LastX);
+            m_VirtualY += (f32)(wy - m_LastY);
+
+            const int margin = 8;
+            int tx = wx, ty = wy;
+            if (wx <= margin) tx = (int)m_Width - margin - 2;
+            else if (wx >= (int)m_Width - margin) tx = margin + 2;
+            if (wy <= margin) ty = (int)m_Height - margin - 2;
+            else if (wy >= (int)m_Height - margin) ty = margin + 2;
+
+            if (tx != wx || ty != wy)
+            {
+                XWarpPointer(m_Display, None, m_Window, 0, 0, 0, 0, tx, ty);
+                XFlush(m_Display);
+                wx = tx; wy = ty;
+            }
+            m_LastX = wxl m_LastY = wy;
+
+            Input::OnMouseMove(m_VirtualX, m_VirtualY);
+            MouseMovedEvent e(m_VirtualX, m_VirtualY);
+            if (m_EventCallback) m_EventCallback(e);
+        }
+
         Display* m_Display = nullptr;
         ::Window m_Window;
         Atom m_WmDeleteMessage;
@@ -168,6 +211,9 @@ namespace Bun
         bool m_VSync;
         bool m_ShouldClose = false;
         EventCallbackFn m_EventCallback;
+        bool m_CursorWrap = false;
+        f32 m_VirtualX = 0.f, m_VirtualY = 0.f;
+        int m_LastX = 0, m_LastY = 0;
 
         struct NativeHandle
         {

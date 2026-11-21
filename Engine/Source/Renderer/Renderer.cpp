@@ -95,12 +95,21 @@ namespace Bun::Renderer
         SetCamera(Math::Mat4::LookAt(Math::Vec3(0.f, 0.f, 2.f), Math::Vec3(0.f), Math::Vec3(0.f, 1.f, 0.f)),
                   Math::Mat4::Perspective(Math::ToRadians(60.f), (f32)ext.width / (f32)ext.height, 0.1f, 100.f));
 
+        m_Sampler.Init(m_Context);
+
+        Assets::ImageData white;
+        white.width = 1; white.height = 1;
+        white.pixels = { 255, 255, 255, 255 };
+        m_WhiteTexture = MakeScope<Texture>();
+        m_WhiteTexture->Init(m_Context, m_Sampler, white);
+
         m_MeshPipeline.Init(m_Context);
         m_MeshPipeline.SetShaders(*m_Shaders["mesh"].vert, *m_Shaders["mesh"].frag);
         m_MeshPipeline.SetRenderPass(m_RenderPass);
         m_MeshPipeline.SetExtent(m_Swapchain.GetExtent());
         m_MeshPipeline.SetUseVertexInput(true);
-        m_MeshPipeline.SetDescriptorLayout(m_CameraDescriptor.GetLayout());
+        m_MeshPipeline.AddDescriptorLayout(m_CameraDescriptor.GetLayout());
+        m_MeshPipeline.AddDescriptorLayout(m_WhiteTexture->GetLayout());
         m_MeshPipeline.SetPushConstantSize(sizeof(PushData));
         m_MeshPipeline.Build();
 
@@ -159,6 +168,8 @@ namespace Bun::Renderer
     void Renderer::Shutdown()
     {
         vkDeviceWaitIdle(m_Context.GetDevice());
+        m_WhiteTexture->Shutdown();
+        m_Sampler.Shutdown();
         m_CubeIndexBuffer.Shutdown();
         m_CubeVertexBuffer.Shutdown();
         m_MeshPipeline.Shutdown();
@@ -336,13 +347,15 @@ namespace Bun::Renderer
         vkCmdDrawIndexed(cmd, 36, 1, 0, 0, 0);
     }*/
 
-    void Renderer::BindMeshState(const PushData& push)
+    void Renderer::BindMeshState(const PushData& push, const Texture* texture)
     {
         VkCommandBuffer cmd = m_CommandBuffer.GetCommandBuffer();
         m_MeshPipeline.Bind(cmd);
 
-        VkDescriptorSet set = m_CameraDescriptor.GetSet();
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_MeshPipeline.GetLayout(), 0, 1, &set, 0, nullptr);
+        const Texture* tex = texture ? texture : m_WhiteTexture.get();
+        VkDescriptorSet sets[2] = { m_CameraDescriptor.GetSet(), tex->GetSet() };
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_MeshPipeline.GetLayout(), 0, 2, sets, 0, nullptr);
+
         vkCmdPushConstants(cmd, m_MeshPipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushData), &push);
     }
 
@@ -364,9 +377,9 @@ namespace Bun::Renderer
         return mesh;
     }
 
-    void Renderer::DrawMesh(const Mesh& mesh, const Math::Mat4& model, const Math::Vec3& color)
+    void Renderer::DrawMesh(const Mesh& mesh, const Math::Mat4& model, const Math::Vec3& color, const Texture* texture)
     {
-        BindMeshState({ model, Math::Vec4(0.f), Math::Vec4(color.x, color.y, color.z, 1.) });
+        BindMeshState({ model, Math::Vec4(0.f), Math::Vec4(color.x, color.y, color.z, 1.f) }, texture);
         VkCommandBuffer cmd = m_CommandBuffer.GetCommandBuffer();
         mesh.Bind(cmd);
         mesh.Draw(cmd);
@@ -399,5 +412,12 @@ namespace Bun::Renderer
     {
         Math::Mat4 model = Math::Mat4::Translation(center) * Math::Mat4::Scale(size);
         DrawCube({ model, Math::Vec4(color.x, color.y, color.z, 1.f), Math::Vec4(1.f) });
+    }
+
+    Scope<Texture> Renderer::CreateTexture(const Assets::ImageData& image)
+    {
+        auto tex = MakeScope<Texture>();
+        tex->Init(m_Context, m_Sampler, image);
+        return tex;
     }
 }

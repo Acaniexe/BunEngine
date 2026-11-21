@@ -1,4 +1,5 @@
 #include "VulkanImage.h"
+#include "VulkanBuffer.h"
 #include <Core/Logger.h>
 
 namespace Bun::RHI
@@ -112,8 +113,49 @@ namespace Bun::RHI
         barrier.subresourceRange.baseArrayLayer = 0;
         barrier.subresourceRange.layerCount = 1;
 
+        VkPipelineStageFlags srcStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+        VkPipelineStageFlags dstStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+
+        if (m_CurrentLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+        {
+            barrier.srcAccessMask = 0;
+            barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            srcStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+            dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        }
+        else if (m_CurrentLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+        {
+            barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            srcStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+            dstStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+        }
+
         vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
         m_CurrentLayout = newLayout;
+    }
+
+    void VulkanImage::UploadPixels(const void* data, VkDeviceSize size)
+    {
+        VulkanBuffer staging;
+        staging.Init(*m_Context, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        staging.Map();
+        staging.WriteData(data, size);
+
+        m_Context->ImmediateSubmit([&](VkCommandBuffer cmd)
+        {
+            TransitionLayout(cmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+            VkBufferImageCopy region{};
+            region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            region.imageSubresource.layerCount = 1;
+            region.imageExtent = { m_Extent.width, m_Extent.height, 1 };
+            vkCmdCopyBufferToImage(cmd, staging.GetBuffer(), m_Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+            TransitionLayout(cmd, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        });
+
+        staging.Shutdown();
     }
 }

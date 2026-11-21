@@ -27,6 +27,7 @@ namespace Bun
         virtual void SetVSync(bool enabled) = 0;
         virtual bool IsVSync() const = 0;
         virtual void* GetNativeHandle() const = 0;
+        virtual void SetCursorWrap(bool enabled) = 0;
 
         static Scope<Window> Create(const WindowDesc& desc = WindowDesc());
     };

@@ -8,4 +8,5 @@
 #include "VulkanDescriptor.h"
 #include "VulkanPipeline.h"
 #include "VulkanCommandBuffer.h"
+#include "VulkanSampler.h"
 #include "Vertex.h"
